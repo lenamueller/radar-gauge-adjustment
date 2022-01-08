@@ -1,5 +1,7 @@
 ## radar-gauge-adjustment
-Shell script for scraping data from DWD's open data server and applying an adjustment for radar rainfall rates with gauge data.
+Shell script for scraping data from DWD's open data server and applying an adjustment for radar rainfall rates with gauge data. 
+
+Run complete code with ```source run.sh```.
 
 ## Packages and Dependencies
 certifi            2021.10.8
@@ -40,20 +42,33 @@ wradlib            1.13.0
 xarray             0.20.2
 xmltodict          0.12.0
 zope.interface     5.4.0
-## Run
-Run complete code with ```source run.sh```.
 
 ## Workflow
-1. Download DX-data: https://opendata.dwd.de/weather/radar/sites/dx/
-2. Read DX-data
-3. Check consistency (-999, NaN, negative values, outlier)
-4. Correct RADAR-specific measuring errors (clutter, attenation)
-5. Apply ZR-Relation
-6. Accumulate 5min-data to 60min-data
-7. Project polar coordinates into UTM
-8. Download gauge data: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/
-9. Apply and evaluate RADAR-gauge adjustment methods
+### 1. Download and read DX-data 
+Data source: https://opendata.dwd.de/weather/radar/sites/dx/   
+<img src="images/radar_dx _drs_1901091250_raw.png" alt="radar_dx _drs_1901091250_raw" width="400"/>
 
-## Overview
-### Raw data
-<img src="images/radar_drs_1901091250.png" alt="radar_drs_1901091250" width="500"/>
+### 2. Correct clutter
+Clutter identification by Gabella et al. (2002). Clutter removal and data interpolation.
+<img src="images/radar_dx _drs_1901091250_cluttermap.png" alt="radar_dx _drs_1901091250_raw" width="400"/><img src="images/radar_dx _drs_1901091250_noclutter.png" alt="radar_dx _drs_1901091250_raw" width="400"/>
+
+### 3. Correct attenuation
+Calculate integrated attenuation for each bin. Kraemer et al., 2008 and Jacobi et al., 2016
+<img src="images/radar_dx _drs_1901091250_attcorr.png" alt="radar_dx _drs_1901091250_attcorr" width="400"/><img src="images/radar_dx _drs_1901091250_attcorr2.png" alt="radar_dx _drs_1901091250_attcorr2" width="400"/>
+
+### 4. Apply ZR-Relation and integrate rain rates for 5min.
+coefficients: a=200, b=1.6   
+<img src="images/radar_dx _drs_1901091250_raindepths.png" alt="radar_dx _drs_1901091250_raindepths" width="400"/>
+
+### 5. Accumulate multiple radar fields to hourly rain depths.
+Todo
+
+### 6. Project polar coordinates into UTM
+Todo
+
+### 7. Download and read gauge-data 
+Data source: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/
+Todo
+
+### 8. Apply and evaluate RADAR-gauge adjustment methods
+Todo
