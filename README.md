@@ -1,10 +1,6 @@
 ## radar-gauge-adjustment
 Shell script for scraping data from DWD's open data server and applying an adjustment for radar rainfall rates with gauge data.
 
-Data sources:  
-* RADAR: https://opendata.dwd.de/weather/radar/sites/dx/drs/ 
-* Gauges: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/1_minute/precipitation/now/   
-
 ## Packages and Dependencies
 certifi            2021.10.8
 cftime             1.5.1.1
@@ -46,5 +42,16 @@ xmltodict          0.12.0
 zope.interface     5.4.0
 ## Run
 Run complete code with ```source run.sh```.
+
+## Workflow
+1. Download DX-data: https://opendata.dwd.de/weather/radar/sites/dx/
+2. Read DX-data
+3. Check consistency (-999, NaN, negative values, outlier)
+4. Correct RADAR-specific measuring errors (clutter, attenation)
+7. Apply ZR-Relation
+8. Accumulate 5min-data to 60min-data
+9. Project polar coordinates into UTM
+10. Download gauge data: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/
+11. Apply and evaluate RADAR-gauge adjustment methods
 
 ## Overview
