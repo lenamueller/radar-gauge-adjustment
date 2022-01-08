@@ -2,13 +2,13 @@ import datetime
 import numpy as np
 import matplotlib.pylab as pl
 import wradlib as wrl
-import wradlib.clutter as clutter
-import wradlib.util as util
 
 import func
 
+
 filename = 'raa00-dx_10488-1901091250-drs---bin'
 fpath = 'example_data/'
+
 radar_location = (13.769722, 51.125278, 263) # (lon, lat, alt) in decimal degree and meters
 elevation = 0.8 # in degree
 
@@ -35,10 +35,6 @@ R = wrl.zr.z_to_r(wrl.trafo.idecibel(data_attcorr))
 # Integrate rainfall rates to rainfall depth for 300sec.
 depths = wrl.trafo.r_to_depth(R, 300)
 func.rain_depths(depths, dt, filename)
-
-
-# Further rainfall accumulation to hourly data.
-# TODO
 
 # Project polar in cartesian coordinates.
 polargrid = np.meshgrid(np.arange(0, 128000., 1000.), np.arange(0,360)) # ranges in meters, azimuths in degrees
@@ -68,4 +64,3 @@ pl.xlim(min(xgrid), max(xgrid))
 pl.ylim(min(ygrid), max(ygrid))
 pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} - DWD RADAR 10488 Dresden - Gridded', fontsize=11)
 pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_grid.png")
-# Apply RADAR-gauge adjustment methods.

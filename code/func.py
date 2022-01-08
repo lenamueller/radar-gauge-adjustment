@@ -1,9 +1,6 @@
-import datetime
-import numpy as np
 import matplotlib.pylab as pl
 import wradlib as wrl
 import wradlib.clutter as clutter
-import wradlib.util as util
 
 
 
@@ -23,6 +20,7 @@ def clutter_gabella(data, dt, filename):
     clmap = clutter.filter_gabella(data, wsize=5, thrsnorain=0., tr1=6., n_p=8, tr2=1.3)
     fig = pl.figure(figsize=(10,8))
     ax, pm = wrl.vis.plot_ppi(clmap)
+    ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
     ax.set_title(f'Detected clutter at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAfter clutter correction', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_cluttermap.png")
     data_no_clutter = wrl.ipol.interpolate_polar(data, clmap)
@@ -65,10 +63,10 @@ def attenuation_corr(data_no_clutter, dt, filename):
 def rain_depths(depths, dt, filename):
     """Plot rain depths."""
     pl.figure(figsize=(10, 8))
-    ax, im = wrl.vis.plot_ppi(depths, cmap="jet") # proj="cg"
+    ax, im = wrl.vis.plot_ppi(depths, cmap="jet")
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
     cbar = pl.colorbar(im, shrink=0.75)
     cbar.set_label("5 min - Rain depths (m)")
-    pl.title(f'Rain dephts at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAfter applying Z-R-relation', fontsize=11)
+    pl.title(f'5min - rain dephts at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAfter applying Z-R-relation', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_raindepths.png")
     return 0
