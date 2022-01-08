@@ -48,10 +48,12 @@ Run complete code with ```source run.sh```.
 2. Read DX-data
 3. Check consistency (-999, NaN, negative values, outlier)
 4. Correct RADAR-specific measuring errors (clutter, attenation)
-7. Apply ZR-Relation
-8. Accumulate 5min-data to 60min-data
-9. Project polar coordinates into UTM
-10. Download gauge data: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/
-11. Apply and evaluate RADAR-gauge adjustment methods
+5. Apply ZR-Relation
+6. Accumulate 5min-data to 60min-data
+7. Project polar coordinates into UTM
+8. Download gauge data: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/
+9. Apply and evaluate RADAR-gauge adjustment methods
 
 ## Overview
+### Raw data
+<img src="images/radar_drs_1901091250.png" alt="radar_drs_1901091250" width="500"/>
