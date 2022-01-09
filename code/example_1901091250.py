@@ -1,6 +1,7 @@
 # Radar postprocessing workflow example: 09.01.2019, Radar Dresden
-
+import sys
 import datetime
+from matplotlib.pyplot import grid
 import numpy as np
 import matplotlib.pylab as pl
 import wradlib as wrl
@@ -57,6 +58,9 @@ ygrid = np.linspace(y.min(), y.max(), 250)
 grid_xy = np.meshgrid(xgrid, ygrid) # 2 lists of 100 lists
 grid_xy = np.vstack((grid_xy[0].ravel(), grid_xy[1].ravel())).transpose() # (1000,2) - array -> [lat, lon] for each cell
 
+# Save UTM grid coordinates in txt-file.
+np.savetxt("code/grid_xy.txt", grid_xy, fmt = "%.4f,%.4f")
+    
 # Create cartesian coordinates of the radar bins.
 xy=np.concatenate([x.ravel()[:,None],y.ravel()[:,None]], axis=1)
 
@@ -75,8 +79,7 @@ cbar.set_label("5 min - Rain depths (mm)", fontsize=15)
 pl.xlabel("Easting (m)", fontsize=15)
 pl.ylabel("Northing (m)", fontsize=15)
 pl.title(f'Rain depths at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nGridded to UTM Zone 33 (EPSG 32633)', fontsize=15)
-pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_grid_1km2.png", dpi=600)
-
+pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_grid_1km.png", dpi=600)
 
 # Read gauge data.
 

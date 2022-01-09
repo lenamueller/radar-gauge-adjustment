@@ -2,3 +2,4 @@ opendata.dwd.de/*
 radargauge-env/*
 example_data/*
 code/__pycache__/*
+code/grid_xy.txt
