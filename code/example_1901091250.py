@@ -81,8 +81,16 @@ pl.ylabel("Northing (m)", fontsize=15)
 pl.title(f'Rain depths at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nGridded to UTM Zone 33 (EPSG 32633)', fontsize=15)
 pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_grid_1km.png", dpi=600)
 
-# Read gauge data.
+# Read gauge metadata.
+gauges_metadata = []
+file_data = open('geodata/RR_stations_150km_UTM.csv')
+for row in file_data:
+    gauges_metadata.append(row.split(";"))
+    
+gauges_metadata = np.array(gauges_metadata)
 
+# Create index list for gauges.
+ 
 # Apply RADAR-gauge adjustment methods.
 
 # Evaluate RADAR-gauge adjustment methods.
