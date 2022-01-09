@@ -63,8 +63,8 @@ coefficients: a=200, b=1.6
 ### 5. Accumulate multiple radar fields to hourly rain depths.
 Todo
 
-### 6. Project polar coordinates into UTM
-Todo
+### 6. Project polar coordinates into UTM Zone 33. 
+<img src="images/radar_dx _drs_1901091250_grid.png" alt="radar_dx _drs_1901091250_grid" width="400"/>
 
 ### 7. Download and read gauge-data 
 Data source: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/
