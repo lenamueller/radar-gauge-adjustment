@@ -12,7 +12,7 @@ def plot_rawdata(data, dt, filename):
     cbar = pl.colorbar(im, shrink=0.75)
     cbar.set_label("Reflectivity (dBZ)")
     pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nraw data', fontsize=11)
-    pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_raw.png")
+    pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_raw.png", dpi=600)
     return 0
 
 def clutter_gabella(data, dt, filename):
@@ -30,7 +30,7 @@ def clutter_gabella(data, dt, filename):
     cbar = pl.colorbar(pm, shrink=0.75)
     cbar.set_label("Reflectivity (dBZ)")
     pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAfter clutter correction', fontsize=11)
-    pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_noclutter.png")
+    pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_noclutter.png", dpi=600)
     return clmap, data_no_clutter
 
 def attenuation_corr(data_no_clutter, dt, filename):
@@ -46,7 +46,7 @@ def attenuation_corr(data_no_clutter, dt, filename):
     cbar = pl.colorbar(pm, shrink=0.75)
     cbar.set_label("Reflectivity (dBZ)")
     pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\n After attenuation correction', fontsize=11)
-    pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr.png")
+    pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr.png", dpi=600)
 
     pl.figure(figsize=(10,8))
     pl.plot(data_no_clutter[65], label="no attenuation correction", c="r")
@@ -55,7 +55,7 @@ def attenuation_corr(data_no_clutter, dt, filename):
     pl.ylabel("dBZ")
     pl.legend()
     pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} - DWD RADAR 10488 Dresden - Attenuation correction', fontsize=11)
-    pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr2.png")
+    pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr2.png", dpi=600)
     
     return att, data_attcorr
 
@@ -67,5 +67,5 @@ def plot_raindepths(depths, dt, filename):
     cbar = pl.colorbar(im, shrink=0.75)
     cbar.set_label("5 min - Rain depths (mm)")
     pl.title(f'5min - rain dephts at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAfter applying Z-R-relation', fontsize=11)
-    pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_raindepths.png")
+    pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_raindepths.png", dpi=600)
     return 0

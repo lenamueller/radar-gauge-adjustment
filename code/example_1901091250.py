@@ -52,8 +52,8 @@ y = utm_coords[..., 1]
 z = utm_coords[..., 2]
 
 # Create cartesian coordinates of the composite (UTM).
-xgrid = np.linspace(x.min(), x.max(), 200) # first two arguments: area of interest, third argument: resolution
-ygrid = np.linspace(y.min(), y.max(), 200)
+xgrid = np.linspace(x.min(), x.max(), 251) # first two arguments: area of interest, third argument: resolution
+ygrid = np.linspace(y.min(), y.max(), 251)
 grid_xy = np.meshgrid(xgrid, ygrid) # 2 lists of 100 lists
 grid_xy = np.vstack((grid_xy[0].ravel(), grid_xy[1].ravel())).transpose() # (1000,2) - array -> [lat, lon] for each cell
 
@@ -77,7 +77,7 @@ pl.ylabel("Northing (m)", fontsize=15)
 pl.xlim(min(xgrid), max(xgrid))
 pl.ylim(min(ygrid), max(ygrid))
 pl.title(f'Rain depths at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nGridded to UTM Zone 33 (EPSG 32633)', fontsize=15)
-pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_grid.png")
+pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_grid_1km.png", dpi=600)
 
 # Read gauge data.
 
