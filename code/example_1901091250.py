@@ -1,27 +1,31 @@
+# Radar postprocessing workflow example: 09.01.2019, Radar Dresden
+
 import datetime
 import numpy as np
 import matplotlib.pylab as pl
 import wradlib as wrl
 
 import func
+from colorbar import cm
 
 
+# Configure filename and path.
 filename = 'raa00-dx_10488-1901091250-drs---bin'
 fpath = 'example_data/'
 
-radar_location = (13.769722, 51.125278, 263) # (lon, lat, alt) in decimal degree and meters
-elevation = 0.8 # in degree
+# Configure radar location and elevation.
+radar_location = (13.769722, 51.125278, 263) # (lon, lat, alt) in decimal degree and meters.
+elevation = 0.8 # elevation in degree.
 
 # Read data.
 f = wrl.util.get_wradlib_data_file(fpath+filename)
 data, metadata = wrl.io.read_dx(f)
-print("data shape:", data.shape, "\nmetadata:", metadata.keys())
-      
+
 # Get date and time.
 dt = datetime.datetime.strptime(filename[15:25], "%y%m%d%H%M")
 
 # Plot reflectivity of raw data.
-func.raw_plot(data, dt, filename)
+func.plot_rawdata(data, dt, filename)
 
 # Clutter correction.
 clmap, data_no_clutter = func.clutter_gabella(data, dt, filename)
@@ -34,33 +38,49 @@ R = wrl.zr.z_to_r(wrl.trafo.idecibel(data_attcorr))
 
 # Integrate rainfall rates to rainfall depth for 300sec.
 depths = wrl.trafo.r_to_depth(R, 300)
-func.rain_depths(depths, dt, filename)
+func.plot_raindepths(depths, dt, filename)
 
-# Project polar in cartesian coordinates.
-polargrid = np.meshgrid(np.arange(0, 128000., 1000.), np.arange(0,360)) # ranges in meters, azimuths in degrees
-coords, rad = wrl.georef.spherical_to_xyz(polargrid[0], polargrid[1], elevation, radar_location)
-x = coords[..., 0]
-y = coords[..., 1]
-utm = wrl.georef.epsg_to_osr(32633) # EPSG-number, UTM Zone 33
+# Create cartesian grid and reproject into UTM Zone 33 (EPSG-number 32633)
+ranges = np.arange(0, 128000., 1000.) # in meters
+azimuths = np.arange(0,360) # in degrees
+polargrid = np.meshgrid(ranges, azimuths)
+coords, rad = wrl.georef.polar.spherical_to_xyz(polargrid[0], polargrid[1], elevation, radar_location) # range, azimut, elevation, radar location, coords: (1,360,128,3)-array
+utm = wrl.georef.epsg_to_osr(32633)
 utm_coords = wrl.georef.reproject(coords, projection_source=rad, projection_target=utm)
-radolan = wrl.georef.create_osr("dwd-radolan")
-radolan_coords = wrl.georef.reproject(coords, projection_target=radolan)
-xgrid = np.linspace(x.min(), x.max(), 200)
+x = utm_coords[..., 0]
+y = utm_coords[..., 1]
+z = utm_coords[..., 2]
+
+# Create cartesian coordinates of the composite (UTM).
+xgrid = np.linspace(x.min(), x.max(), 200) # first two arguments: area of interest, third argument: resolution
 ygrid = np.linspace(y.min(), y.max(), 200)
-grid_xy = np.meshgrid(xgrid, ygrid)
-grid_xy = np.vstack((grid_xy[0].ravel(), grid_xy[1].ravel())).transpose()
+grid_xy = np.meshgrid(xgrid, ygrid) # 2 lists of 100 lists
+grid_xy = np.vstack((grid_xy[0].ravel(), grid_xy[1].ravel())).transpose() # (1000,2) - array -> [lat, lon] for each cell
+
+# Create cartesian coordinates of the radar bins.
 xy=np.concatenate([x.ravel()[:,None],y.ravel()[:,None]], axis=1)
-gridded = wrl.comp.togrid(xy, grid_xy, 128000., np.array([x.mean(), y.mean()]), data.ravel(), wrl.ipol.Nearest)
+
+# Interpolate data to composite grid.
+gridded = wrl.comp.togrid(src=xy, trg=grid_xy, #
+                          radius=128000., center=np.array([x.mean(), y.mean()]), 
+                          data=depths.ravel(), interpol=wrl.ipol.Nearest) # Nearest or Idw
 gridded = np.ma.masked_invalid(gridded).reshape((len(xgrid), len(ygrid)))
 
-fig = pl.figure(figsize=(10,8))
+# Plot gridded radar field.
+fig = pl.figure(figsize=(10, 8))
 ax = pl.subplot(111, aspect="equal")
-pm = pl.pcolormesh(xgrid, ygrid, gridded)
+pm = pl.pcolormesh(xgrid, ygrid, gridded, cmap=cm)
 cbar = pl.colorbar(pm, shrink=0.75)
-cbar.set_label("Reflectivity (dBZ)")
-pl.xlabel("Easting (m)")
-pl.ylabel("Northing (m)")
+cbar.set_label("5 min - Rain depths (mm)", fontsize=15)
+pl.xlabel("Easting (m)", fontsize=15)
+pl.ylabel("Northing (m)", fontsize=15)
 pl.xlim(min(xgrid), max(xgrid))
 pl.ylim(min(ygrid), max(ygrid))
-pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} - DWD RADAR 10488 Dresden - Gridded', fontsize=11)
+pl.title(f'Rain depths at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nGridded to UTM Zone 33 (EPSG 32633)', fontsize=15)
 pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_grid.png")
+
+# Read gauge data.
+
+# Apply RADAR-gauge adjustment methods.
+
+# Evaluate RADAR-gauge adjustment methods.
