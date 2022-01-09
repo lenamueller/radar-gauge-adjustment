@@ -60,15 +60,12 @@ Calculate integrated attenuation for each bin. Kraemer et al., 2008 and Jacobi e
 coefficients: a=200, b=1.6   
 <img src="images/radar_dx _drs_1901091250_raindepths.png" alt="radar_dx _drs_1901091250_raindepths" width="400"/>
 
-### 5. Accumulate multiple radar fields to hourly rain depths.
-Todo
+### 5. Project polar coordinates into UTM Zone 33. 
+<img src="images/radar_dx _drs_1901091250_grid_250_1km.png" alt="radar_dx _drs_1901091250_grid_250_1km" width="400"/>
 
-### 6. Project polar coordinates into UTM Zone 33. 
-<img src="images/radar_dx _drs_1901091250_grid.png" alt="radar_dx _drs_1901091250_grid" width="400"/>
-
-### 7. Download and read gauge-data 
+### 6. Download and read gauge-data 
 Data source: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/
 Todo
 
-### 8. Apply and evaluate RADAR-gauge adjustment methods
+### 7. Apply and evaluate RADAR-gauge adjustment methods
 Todo
