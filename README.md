@@ -53,8 +53,9 @@ Clutter identification by Gabella et al. (2002). Clutter removal and data interp
 <img src="images/radar_dx _drs_1901091250_cluttermap.png" alt="radar_dx _drs_1901091250_raw" width="400"/><img src="images/radar_dx _drs_1901091250_noclutter.png" alt="radar_dx _drs_1901091250_raw" width="400"/>
 
 ### 3. Correct attenuation
+in progress   
 Calculate integrated attenuation for each bin. Kraemer et al., 2008 and Jacobi et al., 2016
-<img src="images/radar_dx _drs_1901091250_attcorr.png" alt="radar_dx _drs_1901091250_attcorr" width="400"/><img src="images/radar_dx _drs_1901091250_attcorr2.png" alt="radar_dx _drs_1901091250_attcorr2" width="400"/>
+<img src="images/radar_dx _drs_1901091250_attcorr.png" alt="radar_dx _drs_1901091250_attcorr" width="400"/>
 
 ### 4. Apply ZR-Relation and integrate rain rates for 5min.
 coefficients: a=200, b=1.6   
