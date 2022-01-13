@@ -6,7 +6,6 @@ radargauge-env/*
 code/__pycache__/*
 code/grid_xy.txt
 code/gridded.txt
-code/composite.py
 
 images/radar_dx_umd*
 images/radar_dx_pro*
