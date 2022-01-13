@@ -10,5 +10,3 @@ wget -r --level=1 https://opendata.dwd.de/climate_environment/CDC/observations_g
 # set data path for wradlib
 export WRADLIB_DATA=/home/lena/Documents/projects/radar-gauge-adjustment/opendata.dwd.de/
 
-#!/bin/sh
-python code/lasthour.py
