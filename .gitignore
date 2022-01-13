@@ -1,9 +1,14 @@
 opendata.dwd.de/*
+geodata/koordinaten-radarverbund.pdf
+
 radargauge-env/*
-example_data/*
+
 code/__pycache__/*
 code/grid_xy.txt
-geodata/koordinaten-radarverbund.pdf
 code/gridded.txt
 code/composite.py
-images/radar_dx _drs_1901091250*
+
+images/radar_dx_umd*
+images/radar_dx_pro*
+images/radar_dx_neu*
+images/radar_dx_eis*
