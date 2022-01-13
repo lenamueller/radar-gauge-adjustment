@@ -1,46 +1,36 @@
-# Radar postprocessing workflow example: 09.01.2019, Radar Dresden
 import sys
-import datetime
-from matplotlib.pyplot import grid
 import numpy as np
-import matplotlib.pylab as pl
 import wradlib as wrl
 
-import func
-from colorbar import cm
+from func import plot_radar, plot_raindepths, plot_gridded, clutter_gabella, attcorr, plot_attenuation_mean_bin, plot_attenuation_per_bin, rain_depths
 
-# Configure filename and path.
-filename = 'raa00-dx_10488-1901091200-drs---bin'
-fpath = 'example_data/'
 
-# Configure radar location and elevation.
-radar_location = (13.769722, 51.125278, 263)
-elevation = 0.8 # elevation in degree.
+# Configure filename, path, radar elevation and location
+filename = sys.argv[1]
+print(filename)
+radar_location = (float(sys.argv[2]), float(sys.argv[3]), int(sys.argv[4])) # lat, lon, height
+elevation = 0.8
 
 # Read data.
-f = wrl.util.get_wradlib_data_file(fpath+filename)
-data, metadata = wrl.io.read_dx(f)
+f = wrl.util.get_wradlib_data_file('example_data/' + filename)
+data, md = wrl.io.read_dx(f)
 
-# Get date and time.
-dt = datetime.datetime.strptime(filename[15:25], "%y%m%d%H%M")
-print(dt)
-
-# Plot reflectivity of raw data.
-func.plot_rawdata(data, dt, filename)
+# Plot raw data.
+plot_radar(data, filename, what="raw", subtitle="Raw data")
 
 # Clutter correction.
-clmap, data_no_clutter = func.clutter_gabella(data, dt, filename)
+clmap, data_no_clutter = clutter_gabella(data, filename)
 
 # Attenuation correction.
-att, data_attcorr = func.attenuation_corr(data_no_clutter, dt, filename)
-func.attenuation_plots(data_no_clutter, att, data_attcorr, dt, filename)
+att, data_attcorr = attcorr(data_no_clutter, filename)
+plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, bin=0)
+plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, bin=90)
+plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, bin=180)
+plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, bin=270)
+plot_attenuation_mean_bin(data_no_clutter, data_attcorr, filename)
 
-# Apply ZR-relation (a=200, b=1.6) to get precipitation rates.
-R = wrl.zr.z_to_r(wrl.trafo.idecibel(data_attcorr))
-
-# Integrate rainfall rates to rainfall depth for 300sec.
-depths = wrl.trafo.r_to_depth(R, 300)
-func.plot_raindepths(depths, dt, filename)
+# Calculate rain depths from reflectivity.
+depths = rain_depths(data=data_attcorr, filename=filename, duration_sec=300)
 
 # Create cartesian grid and reproject into UTM Zone 33 (EPSG-number 32633)
 ranges = np.arange(0, 128000., 1000.) # in meters
@@ -72,26 +62,16 @@ gridded = wrl.comp.togrid(src=xy, trg=grid_xy,
 gridded = np.ma.masked_invalid(gridded).reshape((len(xgrid), len(ygrid)))
 
 # Plot gridded radar field.
-fig = pl.figure(figsize=(10, 8))
-ax = pl.subplot(111, aspect="equal")
-pm = pl.pcolormesh(xgrid, ygrid, gridded, cmap=cm)
-cbar = pl.colorbar(pm, shrink=0.75)
-cbar.ax.tick_params(labelsize=15) 
-cbar.set_label("5 min - Rain depths (mm)", fontsize=15)
-pl.xticks(fontsize=15)
-pl.yticks(fontsize=15)
-pl.xlabel("Easting (m)", fontsize=15)
-pl.ylabel("Northing (m)", fontsize=15)
-pl.title(f'Rain depths at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\nGridded to UTM Zone 33 (EPSG 32633)', fontsize=17)
-pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_grid_1km.png", dpi=600)
+plot_gridded(xgrid, ygrid, gridded, filename, subtitle="Gridded to UTM Zone 33 (EPSG 32633)")
+
 
 # Read gauge metadata.
-gauges_metadata = []
-file_data = open('geodata/RR_stations_150km_UTM.csv')
-for row in file_data:
-    gauges_metadata.append(row.split(";"))
+# gauges_metadata = []
+# file_data = open('geodata/RR_stations_150km_UTM.csv')
+# for row in file_data:
+#     gauges_metadata.append(row.split(";"))
     
-gauges_metadata = np.array(gauges_metadata)
+# gauges_metadata = np.array(gauges_metadata)
 
 # Create index list for gauges.
  
