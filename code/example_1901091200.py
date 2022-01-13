@@ -11,7 +11,7 @@ from colorbar import cm
 
 
 # Configure filename and path.
-filename = 'raa00-dx_10488-1901091250-drs---bin'
+filename = 'raa00-dx_10488-1901091200-drs---bin'
 fpath = 'example_data/'
 
 # Configure radar location and elevation.
