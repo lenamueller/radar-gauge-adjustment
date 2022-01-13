@@ -51,7 +51,7 @@ def attenuation_corr(data_no_clutter, dt, filename):
     data_attcorr = data_no_clutter + att
     return att, data_attcorr
 
-def attenuation_plots(data_no_clutter, data_attcorr, dt, filename):
+def attenuation_plots(data_no_clutter, att, data_attcorr, dt, filename):
     # radar plot with correction for each bin
     pl.figure(figsize=(10,8))
     ax, pm = wrl.vis.plot_ppi(data_attcorr)
@@ -63,6 +63,16 @@ def attenuation_plots(data_no_clutter, data_attcorr, dt, filename):
     pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\n After attenuation correction', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr.png", dpi=600)
 
+    pl.figure(figsize=(10,8))
+    ax, pm = wrl.vis.plot_ppi(att, cmap="Reds")
+    ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
+    cbar = pl.colorbar(pm, shrink=0.75)
+    cbar.set_label("$\Delta$ Reflectivity (dBZ)")
+    pl.xlim([-135, 135])
+    pl.ylim([-135, 135])
+    pl.title(f'$\Delta$ Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\n Attenuation error', fontsize=11)
+    pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_att.png", dpi=600)
+    
     # line plot: mean bin
     pl.figure(figsize=(10,8))
     pl.plot(np.mean(data_no_clutter, axis=1), label="no AC", c="r", lw=1)

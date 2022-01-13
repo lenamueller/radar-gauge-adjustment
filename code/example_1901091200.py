@@ -33,7 +33,7 @@ clmap, data_no_clutter = func.clutter_gabella(data, dt, filename)
 
 # Attenuation correction.
 att, data_attcorr = func.attenuation_corr(data_no_clutter, dt, filename)
-func.attenuation_plots(data_no_clutter, data_attcorr, dt, filename)
+func.attenuation_plots(data_no_clutter, att, data_attcorr, dt, filename)
 
 # Apply ZR-relation (a=200, b=1.6) to get precipitation rates.
 R = wrl.zr.z_to_r(wrl.trafo.idecibel(data_attcorr))
