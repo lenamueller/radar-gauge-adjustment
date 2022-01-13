@@ -54,7 +54,7 @@ Clutter identification, removal and data interpolation (Algorithm by Gabella et 
 
 ### 3. Correct attenuation
 Calculate integrated attenuation for each bin (Kraemer et al. 2008, Jacobi et al. 2016).   
-<img src="images/radar_dx _drs_1901091200_attcorr.png" alt="radar_dx _drs_1901091200_attcorr" width="400"/>
+<img src="images/radar_dx _drs_1901091200_att.png" alt="radar_dx _drs_1901091200_att" width="400"/> <img src="images/radar_dx _drs_1901091200_attcorr.png" alt="radar_dx _drs_1901091200_attcorr" width="400"/>
 
 #### Averaged attenuation:   
 <img src="images/radar_dx _drs_1901091200_attcorr_meanbin.png" alt="radar_dx _drs_1901091200_attcorr_meanbin" width="400"/>
