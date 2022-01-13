@@ -14,7 +14,7 @@ def plot_rawdata(data, dt, filename):
     cbar.set_label("Reflectivity (dBZ)")
     pl.xlim([-135, 135])
     pl.ylim([-135, 135])
-    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nraw data', fontsize=11)
+    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\nraw data', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_raw.png", dpi=600)
     return 0
 
@@ -26,7 +26,7 @@ def clutter_gabella(data, dt, filename):
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
     pl.xlim([-135, 135])
     pl.ylim([-135, 135])
-    ax.set_title(f'Detected clutter at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAfter clutter correction', fontsize=11)
+    ax.set_title(f'Detected clutter at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\nAfter clutter correction', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_cluttermap.png")
     
     data_no_clutter = wrl.ipol.interpolate_polar(data, clmap)
@@ -37,7 +37,7 @@ def clutter_gabella(data, dt, filename):
     cbar.set_label("Reflectivity (dBZ)")
     pl.xlim([-135, 135])
     pl.ylim([-135, 135])
-    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAfter clutter correction', fontsize=11)
+    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\nAfter clutter correction', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_noclutter.png", dpi=600)
     return clmap, data_no_clutter
 
@@ -60,7 +60,7 @@ def attenuation_plots(data_no_clutter, att, data_attcorr, dt, filename):
     cbar.set_label("Reflectivity (dBZ)")
     pl.xlim([-135, 135])
     pl.ylim([-135, 135])
-    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\n After attenuation correction', fontsize=11)
+    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\n After attenuation correction', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr.png", dpi=600)
 
     pl.figure(figsize=(10,8))
@@ -70,7 +70,7 @@ def attenuation_plots(data_no_clutter, att, data_attcorr, dt, filename):
     cbar.set_label("$\Delta$ Reflectivity (dBZ)")
     pl.xlim([-135, 135])
     pl.ylim([-135, 135])
-    pl.title(f'$\Delta$ Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\n Attenuation error', fontsize=11)
+    pl.title(f'$\Delta$ Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\n Attenuation error', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_att.png", dpi=600)
     
     # line plot: mean bin
@@ -80,7 +80,7 @@ def attenuation_plots(data_no_clutter, att, data_attcorr, dt, filename):
     pl.xlabel("km", fontsize=14)
     pl.ylabel("dBZ", fontsize=14)
     pl.legend(fontsize=14)
-    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAC (averaged)', fontsize=14)
+    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\nAC (averaged)', fontsize=14)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr_meanbin.png", dpi=600)
     
     # line plot: single bins
@@ -90,7 +90,7 @@ def attenuation_plots(data_no_clutter, att, data_attcorr, dt, filename):
     pl.xlabel("km", fontsize=14)
     pl.ylabel("dBZ", fontsize=14)
     pl.legend(fontsize=14)
-    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAC - azimuth angle 0 degree', fontsize=14)
+    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\nAC - azimuth angle 0 degree', fontsize=14)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr_bin0.png", dpi=600)
     
     pl.figure(figsize=(10,8))
@@ -99,7 +99,7 @@ def attenuation_plots(data_no_clutter, att, data_attcorr, dt, filename):
     pl.xlabel("km", fontsize=14)
     pl.ylabel("dBZ", fontsize=14)
     pl.legend(fontsize=14)
-    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAC - azimuth angle 90 degree', fontsize=14)
+    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\nAC - azimuth angle 90 degree', fontsize=14)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr_bin90.png", dpi=600)
     
     pl.figure(figsize=(10,8))
@@ -108,7 +108,7 @@ def attenuation_plots(data_no_clutter, att, data_attcorr, dt, filename):
     pl.xlabel("km", fontsize=14)
     pl.ylabel("dBZ", fontsize=14)
     pl.legend(fontsize=14)
-    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAC - azimuth angle 180 degree', fontsize=14)
+    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\nAC - azimuth angle 180 degree', fontsize=14)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr_bin180.png", dpi=600)
     
     pl.figure(figsize=(10,8))
@@ -117,8 +117,18 @@ def attenuation_plots(data_no_clutter, att, data_attcorr, dt, filename):
     pl.xlabel("km", fontsize=14)
     pl.ylabel("dBZ", fontsize=14)
     pl.legend(fontsize=14)
-    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAC - azimuth angle 270 degree', fontsize=14)
+    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\nAC - azimuth angle 270 degree', fontsize=14)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr_bin270.png", dpi=600)
+    
+    pl.figure(figsize=(10,8))
+    pl.plot(data_no_clutter[240], label="no AC", c="r", lw=1)
+    pl.plot(data_attcorr[240], label="with AC", c="g", lw=1)
+    pl.xlabel("km", fontsize=14)
+    pl.ylabel("dBZ", fontsize=14)
+    pl.legend(fontsize=14)
+    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\nAC - azimuth angle 270 degree', fontsize=14)
+    pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr_bin240.png", dpi=600)
+    
     return 0
 
 def plot_raindepths(depths, dt, filename):
@@ -130,6 +140,6 @@ def plot_raindepths(depths, dt, filename):
     cbar.set_label("5 min - Rain depths (mm)")
     pl.xlim([-135, 135])
     pl.ylim([-135, 135])
-    pl.title(f'5min - rain dephts at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAfter applying Z-R-relation', fontsize=11)
+    pl.title(f'5min - rain dephts at {dt.strftime("%d-%m-%Y %H:%M")} UTC\nDWD RADAR 10488 Dresden\nAfter applying Z-R-relation', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_raindepths.png", dpi=600)
     return 0
