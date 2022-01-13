@@ -4,13 +4,16 @@ import wradlib.clutter as clutter
 
 from colorbar import cm
 
+
 def plot_rawdata(data, dt, filename):
     """Plot reflectivity."""
-    pl.figure(figsize=(10, 8))
+    pl.figure(figsize=(10,8))
     ax, im = wrl.vis.plot_ppi(data, cmap="viridis") # proj="cg"
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
     cbar = pl.colorbar(im, shrink=0.75)
     cbar.set_label("Reflectivity (dBZ)")
+    pl.xlim([-135, 135])
+    pl.ylim([-135, 135])
     pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nraw data', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_raw.png", dpi=600)
     return 0
@@ -21,14 +24,19 @@ def clutter_gabella(data, dt, filename):
     pl.figure(figsize=(10,8))
     ax, pm = wrl.vis.plot_ppi(clmap)
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
+    pl.xlim([-135, 135])
+    pl.ylim([-135, 135])
     ax.set_title(f'Detected clutter at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAfter clutter correction', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_cluttermap.png")
+    
     data_no_clutter = wrl.ipol.interpolate_polar(data, clmap)
     pl.figure(figsize=(10,8))
     ax, pm = wrl.vis.plot_ppi(data_no_clutter)
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
     cbar = pl.colorbar(pm, shrink=0.75)
     cbar.set_label("Reflectivity (dBZ)")
+    pl.xlim([-135, 135])
+    pl.ylim([-135, 135])
     pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAfter clutter correction', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_noclutter.png", dpi=600)
     return clmap, data_no_clutter
@@ -45,6 +53,8 @@ def attenuation_corr(data_no_clutter, dt, filename):
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
     cbar = pl.colorbar(pm, shrink=0.75)
     cbar.set_label("Reflectivity (dBZ)")
+    pl.xlim([-135, 135])
+    pl.ylim([-135, 135])
     pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\n After attenuation correction', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_attcorr.png", dpi=600)
 
@@ -66,6 +76,8 @@ def plot_raindepths(depths, dt, filename):
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
     cbar = pl.colorbar(im, shrink=0.75)
     cbar.set_label("5 min - Rain depths (mm)")
+    pl.xlim([-135, 135])
+    pl.ylim([-135, 135])
     pl.title(f'5min - rain dephts at {dt.strftime("%d-%m-%Y %H:%M")}\nDWD RADAR 10488 Dresden\nAfter applying Z-R-relation', fontsize=11)
     pl.savefig(f"images/radar_dx _drs_{filename[15:25]}_raindepths.png", dpi=600)
     return 0
