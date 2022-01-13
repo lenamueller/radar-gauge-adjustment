@@ -1,7 +1,9 @@
 ## radar-gauge-adjustment
 Shell script for scraping data from DWD's open data server and applying an adjustment for radar rainfall rates with gauge data. 
 
-Run complete code with ```source run.sh``` (todo).
+Run example case with ```source run_sample.sh```.   
+Run latest radar images with ```source run.sh``` (todo).
+
 
 ## Packages and Dependencies
 certifi            2021.10.8
@@ -46,28 +48,30 @@ zope.interface     5.4.0
 ## Workflow (test case 09.01.2019 12:00 UTC)
 ### 1. Read DX-data 
 Data source: https://opendata.dwd.de/weather/radar/sites/dx/   
-<img src="images/radar_dx _drs_1901091200_raw.png" alt="radar_dx _drs_1901091200_raw" width="400"/>
+<img src="images/radar_dx_drs_1901091200_raw.png" alt="radar_dx_drs_1901091200_raw" width="400"/>
 
 ### 2. Correct clutter
 Clutter identification, removal and data interpolation (algorithm by Gabella et al. 2002).
-<img src="images/radar_dx _drs_1901091200_cluttermap.png" alt="radar_dx _drs_1901091200_raw" width="400"/><img src="images/radar_dx _drs_1901091200_noclutter.png" alt="radar_dx _drs_1901091200_raw" width="400"/>
+<img src="images/radar_dx_drs_1901091200_cluttermap.png" alt="radar_dx_drs_1901091200_raw" width="400"/>
+<img src="images/radar_dx_drs_1901091200_noclutter.png" alt="radar_dx_drs_1901091200_noclutter" width="400"/>
 
 ### 3. Correct attenuation
-Calculate integrated attenuation for each bin (Kraemer et al. 2008, Jacobi et al. 2016).   
-<img src="images/radar_dx _drs_1901091200_att.png" alt="radar_dx _drs_1901091200_att" width="400"/> <img src="images/radar_dx _drs_1901091200_attcorr.png" alt="radar_dx _drs_1901091200_attcorr" width="400"/>
+Calculate integrated attenuation for each bin (Kraemer et al. 2008, Jacobi et al. 2016).
+<img src="images/radar_dx_drs_1901091200_att.png" alt="radar_dx_drs_1901091200_att" width="400"/>
+<img src="images/radar_dx_drs_1901091200_attcorr.png" alt="radar_dx_drs_1901091200_attcorr" width="400"/>
 
 #### Averaged attenuation:   
-<img src="images/radar_dx _drs_1901091200_attcorr_meanbin.png" alt="radar_dx _drs_1901091200_attcorr_meanbin" width="400"/>
+<img src="images/radar_dx_drs_1901091200_attcorr_meanbin.png" alt="radar_dx_drs_1901091200_attcorr_meanbin" width="400"/>
 
 #### Individual attenuation for single azimuth angles (examples):   
-<img src="images/radar_dx _drs_1901091200_attcorr_bin90.png" alt="radar_dx _drs_1901091200_attcorr_bin90" width="400"/> <img src="images/radar_dx _drs_1901091200_attcorr_bin240.png" alt="radar_dx _drs_1901091200_attcorr_bin240" width="400"/>
+<img src="images/radar_dx_drs_1901091200_attcorr_bin90.png" alt="radar_dx_drs_1901091200_attcorr_bin90" width="400"/> <img src="images/radar_dx_drs_1901091200_attcorr_bin270.png" alt="radar_dx_drs_1901091200_attcorr_bin270" width="400"/>
 
 ### 4. Calculate rain depths
 Apply ZR-Relation with coefficients a=200 and b=1.6. Integrate rain rates for 5min.   
-<img src="images/radar_dx _drs_1901091200_raindepths.png" alt="radar_dx _drs_1901091200_raindepths" width="400"/>
+<img src="images/radar_dx_drs_1901091200_raindepths.png" alt="radar_dx_drs_1901091200_raindepths" width="400"/>
 
 ### 5. Reproject into UTM Zone 33. 
-<img src="images/radar_dx _drs_1901091200_grid_1km.png" alt="radar_dx _drs_1901091200_grid_1km" width="400"/>
+<img src="images/radar_dx_drs_1901091200_grid_1km.png" alt="radar_dx_drs_1901091200_grid_1km" width="400"/>
 
 ### 6. Create composite of multiple radar sites 
 in progress   
