@@ -9,9 +9,8 @@ import wradlib as wrl
 import func
 from colorbar import cm
 
-
 # Configure filename and path.
-filename = 'raa00-dx_10488-1901091250-drs---bin'
+filename = 'raa00-dx_10488-1901091200-drs---bin'
 fpath = 'example_data/'
 
 # Configure radar location and elevation.
@@ -24,6 +23,7 @@ data, metadata = wrl.io.read_dx(f)
 
 # Get date and time.
 dt = datetime.datetime.strptime(filename[15:25], "%y%m%d%H%M")
+print(dt)
 
 # Plot reflectivity of raw data.
 func.plot_rawdata(data, dt, filename)
@@ -33,6 +33,7 @@ clmap, data_no_clutter = func.clutter_gabella(data, dt, filename)
 
 # Attenuation correction.
 att, data_attcorr = func.attenuation_corr(data_no_clutter, dt, filename)
+func.attenuation_plots(data_no_clutter, data_attcorr, dt, filename)
 
 # Apply ZR-relation (a=200, b=1.6) to get precipitation rates.
 R = wrl.zr.z_to_r(wrl.trafo.idecibel(data_attcorr))
