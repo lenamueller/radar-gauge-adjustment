@@ -1,9 +1,8 @@
-[![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/ansicolortags/)
-[![GitHub latest commit](https://badgen.net/github/last-commit/Naereen/Strapdown.js)](https://github.com/lenamueller/radar-gauge-adjustment/commits/)
-[![GitHub issues](https://img.shields.io/github/issues/Naereen/StrapDown.js.svg)](https://github.com/lenamueller/radar-gauge-adjustment/issues/)
-[![GitHub pull-requests](https://img.shields.io/github/issues-pr/Naereen/StrapDown.js.svg)](https://github.com/lenamueller/radar-gauge-adjustment/pulls/)
-[![Only 32 Kb](https://badge-size.herokuapp.com/Naereen/StrapDown.js/master/strapdown.min.js)](https://github.com/lenamueller/radar-gauge-adjustment)
-
+[![Repo status - Active](https://img.shields.io/badge/Repo_status-Active-00aa00)](https://)
+[![GitHub issues](https://img.shields.io/github/issues/lenamueller/radar-gauge-adjustment)](https://github.com/lenamueller/radar-gauge-adjustment/issues/)
+[![python - 3.10.1](https://img.shields.io/badge/python-3.10.1-ffe05c?logo=python&logoColor=4685b7)](https://)
+[![field of application - meteorology, hydrology](https://img.shields.io/badge/field_of_application-meteorology%2C_hydrology-00aaff)](https://)
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/Naereen/badges)
 
 ## radar-gauge-adjustment
 Shell script for scraping data from DWD's open data server and applying an adjustment for radar rainfall rates with gauge data. 
