@@ -98,7 +98,7 @@ def plot_raindepths(depths, filename):
     ax, im = wrl.vis.plot_ppi(depths, cmap=cm)
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
     cbar = pl.colorbar(im, shrink=0.75)
-    cbar.set_label("5 min - Rain depths (mm)")
+    cbar.set_label("5 min - rain depths (mm)")
     pl.xlim([-135, 135])
     pl.ylim([-135, 135])
     site_abb, site_text, dt = metadata(filename)
