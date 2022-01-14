@@ -75,7 +75,7 @@ def plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, bin):
     pl.ylabel("dBZ", fontsize=14)
     pl.legend(fontsize=14)
     site_abb, site_text, dt = metadata(filename)
-    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\nAC - azimuth angle 0 degree', fontsize=14)
+    pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\nAC - azimuth angle {bin} degree', fontsize=14)
     pl.savefig(f"images/radar_dx_{site_abb}_{filename[15:25]}_attcorr_bin{bin}.png", dpi=600)
     return 0
 

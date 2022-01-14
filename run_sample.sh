@@ -3,6 +3,9 @@
 # exit on first error
 set -e
 
+# activate virutal environment
+source radargauge-env/bin/activate
+
 # set data path for wradlib
 export WRADLIB_DATA=/home/lena/Documents/projects/radar-gauge-adjustment/opendata.dwd.de/
 
@@ -13,3 +16,6 @@ python code/example_1901091200.py "raa00-dx_10392-1901091200-pro---bin" "13.8582
 python code/example_1901091200.py "raa00-dx_10356-1901091200-umd---bin" "11.176091" "52.160096" "185"
 python code/example_1901091200.py "raa00-dx_10557-1901091200-neu---bin" "11.135034" "50.500114" "880"
 python code/example_1901091200.py "raa00-dx_10780-1901091200-eis---bin" "12.402788" "49.540667" "799"
+
+# deactivate virtual env.
+deactivate
