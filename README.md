@@ -78,9 +78,9 @@ Apply ZR-Relation with coefficients a=200 and b=1.6. Integrate rain rates for 5m
 ### 5. Reproject into UTM Zone 33. 
 <img src="images/radar_dx_drs_1901091200_grid_1km.png" alt="radar_dx_drs_1901091200_grid_1km" width="400"/>
 
-### 6. Create composite of multiple radar sites 
+### 6. Create composite of radar sites drs, umd, neu, eis and pro
 in progress   
-available in sample data: drs, umd, neu, eis, pro
+<img src="images/composite_1901091200_4326.png" alt="composite_1901091200_4326" width="600"/>
 
 ### 7. Download and read gauge-data 
 Todo   
