@@ -11,3 +11,7 @@ images/radar_dx_umd*
 images/radar_dx_pro*
 images/radar_dx_neu*
 images/radar_dx_eis*
+code/domain_final.txt
+code/utmgrid.txt
+code/xgrid.txt
+code/ygrid.txt
