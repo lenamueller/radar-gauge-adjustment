@@ -25,7 +25,7 @@ site_loc_eis = (12.402788, 49.540667, 799)
 
 def get_depths(filename):
     """ 
-    Read data from file. Correct clutter and attenuation. Calculate and return 5min - rain depths as (360,128) - array.
+    Read data from file. Correct clutter and attenuation. Calculate and return 5min - rain depths as (360   ,128) - array.
     """
     f = wrl.util.get_wradlib_data_file('example_data/'+filename)
     data, metadata = wrl.io.read_dx(f)
@@ -41,78 +41,73 @@ depths_umd = get_depths(filename_umd)
 depths_neu = get_depths(filename_neu)
 depths_eis = get_depths(filename_eis)
 
+# georeferencing
+wgs = wrl.georef.epsg_to_osr(4326) # default
+utm = wrl.georef.epsg_to_osr(25833) # UTM Zone 33N
+
 # Gridding into EPSG 4326 (default)
-def get_coords(depths, radar_loc):
+def get_coords(depths, radar_loc, centerxy):
     # Get cartesian coordinates in xyz-space.
     elevation = 0.5 # in degree
     azimuths = np.arange(0,360)
     ranges = np.arange(0, 128000., 1000.)
     polargrid = np.meshgrid(ranges, azimuths)
     coords, rad = wrl.georef.spherical_to_xyz(polargrid[0], polargrid[1], elevation, radar_loc)
+    # coords = wrl.georef.projection.spherical_to_proj(polargrid[0], polargrid[1], projection_target=utm)
+    
+    
     x = coords[..., 0]
     y = coords[..., 1]
-
+    x = x + centerxy[0]
+    y = y + centerxy[1]
+    
     # Gridding -> 2D array
-    xgrid = np.linspace(x.min(), x.max(), 256)
-    ygrid = np.linspace(y.min(), y.max(), 256)
+    xgrid = np.linspace(-350000,350000,700)
+    ygrid = np.linspace(-350000,350000,700)
     grid_xy = np.meshgrid(xgrid, ygrid)
     grid_xy = np.vstack((grid_xy[0].ravel(), grid_xy[1].ravel())).transpose()
     xy=np.concatenate([x.ravel()[:,None],y.ravel()[:,None]], axis=1)
-    gridded = wrl.comp.togrid(xy, grid_xy, 128000., np.array([0,0]), depths.ravel(), wrl.ipol.Idw)
+    gridded = wrl.comp.togrid(src=xy, trg=grid_xy, 
+                              radius=128000., 
+                            #   center=np.array([0,0]),
+                              center = centerxy,
+                              data=depths.ravel(), 
+                              interpol=wrl.ipol.Idw)
+
     # gridded = np.ma.masked_invalid(gridded).reshape((len(xgrid), len(ygrid)))
     gridded = gridded.reshape((len(xgrid), len(ygrid)))
     return xgrid, ygrid, gridded, rad
 
-xgrid_drs, ygrid_drs, gridded_drs, rad = get_coords(depths_drs, site_loc_drs)
-xgrid_eis, ygrid_eis, gridded_eis, rad = get_coords(depths_eis, site_loc_eis)
-xgrid_pro, ygrid_pro, gridded_pro, rad = get_coords(depths_pro, site_loc_pro)
-xgrid_umd, ygrid_umd, gridded_umd, rad = get_coords(depths_umd, site_loc_umd)
-xgrid_neu, ygrid_neu, gridded_neu, rad = get_coords(depths_neu, site_loc_neu)
+xgrid_drs, ygrid_drs, gridded_drs, rad = get_coords(depths_drs, site_loc_drs, np.array([0,0]))
+xgrid_eis, ygrid_eis, gridded_eis, rad = get_coords(depths_eis, site_loc_eis, np.array([-95000,-176000]))
+xgrid_pro, ygrid_pro, gridded_pro, rad = get_coords(depths_pro, site_loc_pro, np.array([6000,169000]))
+xgrid_umd, ygrid_umd, gridded_umd, rad = get_coords(depths_umd, site_loc_umd, np.array([-181000,69000]))
+xgrid_neu, ygrid_neu, gridded_neu, rad = get_coords(depths_neu, site_loc_neu, np.array([-184000,-69000]))
 
 
-# Calculate offset of sites pro, umd, eis, neu from site drs.
-xgrid_pro = [x+6*1000 for x in xgrid_drs]
-ygrid_pro = [y+169*1000 for y in ygrid_drs]
-xgrid_eis = [x-95*1000 for x in xgrid_drs]
-ygrid_eis = [y-176*1000 for y in ygrid_drs]
-xgrid_neu = [x-184*1000 for x in xgrid_drs]
-ygrid_neu = [y-69*1000 for y in ygrid_drs]
-xgrid_umd = [x-181*1000 for x in xgrid_drs]
-ygrid_umd = [y+69*1000 for y in ygrid_drs]
-np.savetxt("code/xgrid_pro.txt", xgrid_pro, fmt = "%.4f")
-np.savetxt("code/xgrid_drs.txt", xgrid_drs, fmt = "%.4f")
-
-# Add data to domain
-domain = np.zeros((700,550))
-def radar_into_domain(gridded_data, x_offset, y_offset):
+def radar_into_domain(domain, gridded_data):
     """ 
     Change nan's to zeros. Choose element wise maximum and insert in main domain.
     """
-    x_offset-= 128
-    y_offset-= 128
-    domain_new = np.maximum(domain[y_offset:y_offset+gridded_data.shape[0], x_offset:x_offset+gridded_data.shape[1]], np.nan_to_num(gridded_data))
-    domain[y_offset:y_offset+gridded_data.shape[0], x_offset:x_offset+gridded_data.shape[1]] = domain_new
-    
+    return np.maximum(domain, np.nan_to_num(gridded_data))
 
-radar_into_domain(gridded_drs, 350, 350)
-radar_into_domain(gridded_eis, 255, 174)
-radar_into_domain(gridded_pro, 356, 519)
-radar_into_domain(gridded_umd, 168, 419)
-radar_into_domain(gridded_neu, 166 ,281)
+d2 = radar_into_domain(np.zeros((700,700)), gridded_drs)
+d3 = radar_into_domain(d2, gridded_eis)
+d4 = radar_into_domain(d3, gridded_pro)
+d5 = radar_into_domain(d4, gridded_umd)
+domain_final = radar_into_domain(d5, gridded_neu)
+
+
 
 # Plotting
 fig = pl.figure(figsize=(10,8))
 ax = pl.subplot(111, aspect="equal")
-plt.imshow(domain, cmap=cm) # heatmap
+pl.pcolormesh(xgrid_drs, ygrid_drs, domain_final, cmap=cm)
 cbar = pl.colorbar()
 cbar.ax.tick_params(labelsize=15) 
 cbar.set_label("5 min - rain depths (mm)", fontsize=15)
-pl.xlim([0, 550])
-pl.ylim([0, 700])
-pl.xticks(ticks=np.arange(0,600,50), labels=np.arange(-350,250,50))
-pl.yticks(ticks=np.arange(0,750,50), labels=np.arange(-350,400,50))
 pl.grid(lw=0.5)
-pl.xlabel("distance (km)")
-pl.ylabel("distance (km)")
+# pl.xlabel("distance (km)")
+# pl.ylabel("distance (km)")
 pl.title("Centered at RADAR site Dresden (WMO no. 10488)", fontsize=12)
-pl.savefig(f"images/composite_{filename_drs[15:25]}_4326", dpi=600)
+pl.savefig(f"images/composite_{filename_drs[15:25]}_new", dpi=600)
