@@ -41,7 +41,7 @@ depths_umd = get_depths(filename_umd)
 depths_neu = get_depths(filename_neu)
 depths_eis = get_depths(filename_eis)
 
-# Gridding
+# Gridding into EPSG 4326 (default)
 def get_coords(depths, radar_loc):
     # Get cartesian coordinates in xyz-space.
     elevation = 0.5 # in degree
@@ -61,13 +61,13 @@ def get_coords(depths, radar_loc):
     gridded = wrl.comp.togrid(xy, grid_xy, 128000., np.array([0,0]), depths.ravel(), wrl.ipol.Idw)
     # gridded = np.ma.masked_invalid(gridded).reshape((len(xgrid), len(ygrid)))
     gridded = gridded.reshape((len(xgrid), len(ygrid)))
-    return xgrid, ygrid, gridded
+    return xgrid, ygrid, gridded, rad
 
-xgrid_drs, ygrid_drs, gridded_drs = get_coords(depths_drs, site_loc_drs)
-xgrid_eis, ygrid_eis, gridded_eis = get_coords(depths_eis, site_loc_eis)
-xgrid_pro, ygrid_pro, gridded_pro = get_coords(depths_pro, site_loc_pro)
-xgrid_umd, ygrid_umd, gridded_umd = get_coords(depths_umd, site_loc_umd)
-xgrid_neu, ygrid_neu, gridded_neu = get_coords(depths_neu, site_loc_neu)
+xgrid_drs, ygrid_drs, gridded_drs, rad = get_coords(depths_drs, site_loc_drs)
+xgrid_eis, ygrid_eis, gridded_eis, rad = get_coords(depths_eis, site_loc_eis)
+xgrid_pro, ygrid_pro, gridded_pro, rad = get_coords(depths_pro, site_loc_pro)
+xgrid_umd, ygrid_umd, gridded_umd, rad = get_coords(depths_umd, site_loc_umd)
+xgrid_neu, ygrid_neu, gridded_neu, rad = get_coords(depths_neu, site_loc_neu)
 
 
 # Calculate offset of sites pro, umd, eis, neu from site drs.
@@ -79,6 +79,8 @@ xgrid_neu = [x-184*1000 for x in xgrid_drs]
 ygrid_neu = [y-69*1000 for y in ygrid_drs]
 xgrid_umd = [x-181*1000 for x in xgrid_drs]
 ygrid_umd = [y+69*1000 for y in ygrid_drs]
+np.savetxt("code/xgrid_pro.txt", xgrid_pro, fmt = "%.4f")
+np.savetxt("code/xgrid_drs.txt", xgrid_drs, fmt = "%.4f")
 
 # Add data to domain
 domain = np.zeros((700,550))
@@ -101,15 +103,16 @@ radar_into_domain(gridded_neu, 166 ,281)
 # Plotting
 fig = pl.figure(figsize=(10,8))
 ax = pl.subplot(111, aspect="equal")
-plt.imshow(domain, cmap=cm)
+plt.imshow(domain, cmap=cm) # heatmap
 cbar = pl.colorbar()
 cbar.ax.tick_params(labelsize=15) 
-cbar.set_label("5 min - Rain depths (mm)", fontsize=15)
+cbar.set_label("5 min - rain depths (mm)", fontsize=15)
 pl.xlim([0, 550])
 pl.ylim([0, 700])
-# pl.xlim([-350000, 200000])
-# pl.ylim([-350000, 350000])
-pl.xlabel("Easting (m)")
-pl.ylabel("Northing (m)")
-pl.title("Centered at DWD RADAR 10488 Dresden", fontsize=12)
-pl.savefig(f"images/composite_{filename_drs[15:25]}", dpi=600)
+pl.xticks(ticks=np.arange(0,600,50), labels=np.arange(-350,250,50))
+pl.yticks(ticks=np.arange(0,750,50), labels=np.arange(-350,400,50))
+pl.grid(lw=0.5)
+pl.xlabel("distance (km)")
+pl.ylabel("distance (km)")
+pl.title("Centered at RADAR site Dresden (WMO no. 10488)", fontsize=12)
+pl.savefig(f"images/composite_{filename_drs[15:25]}_4326", dpi=600)
