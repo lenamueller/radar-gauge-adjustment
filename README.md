@@ -75,18 +75,16 @@ Calculate integrated attenuation for each bin (Kraemer et al. 2008, Jacobi et al
 Apply ZR-Relation with coefficients a=200 and b=1.6. Integrate rain rates for 5min.   
 <img src="images/radar_dx_drs_1901091200_raindepths.png" alt="radar_dx_drs_1901091200_raindepths" width="400"/>
 
-### 5. Reproject into UTM Zone 33. 
-<img src="images/radar_dx_drs_1901091200_grid_1km.png" alt="radar_dx_drs_1901091200_grid_1km" width="400"/>
+### 5. Create composite and georeference
+Contains radar sites Dresden (drs), Ummendorf (umd), Neuhaus (neu), Eisberg (eis) and Prötzel (pro).   
+Projection: UTM Zone 33N (EPSG 25832, https://epsg.io/25832). Spatial resolution: 1km, equidistant.   
+<img src="images/composite_1901091200_utm.png" alt="composite_1901091200_utm" width="700"/>
 
-### 6. Create composite of radar sites drs, umd, neu, eis and pro
-in progress   
-<img src="images/composite_1901091200_4326.png" alt="composite_1901091200_4326" width="600"/>
-
-### 7. Download and read gauge-data 
+### 6. Download and read gauge-data 
 Todo   
 Data source:  
 1h-data: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/   
 1min-data: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/1_minute/precipitation/
 
-### 8. Apply and evaluate RADAR-gauge adjustment methods
+### 7. Apply and evaluate RADAR-gauge adjustment methods
 Todo
