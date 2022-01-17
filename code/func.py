@@ -7,6 +7,7 @@ from colorbar import cm, cm_binary
 
 
 def metadata(filename):
+    """ Return radar site abbreviation, radar site description and datetime object."""
     site_abb = filename[26:29]
     dt = datetime.datetime.strptime(filename[15:25], "%y%m%d%H%M")
     if site_abb == "drs":
@@ -25,6 +26,7 @@ def metadata(filename):
 
 
 def plot_radar(data, filename, subtitle, what, cm="viridis", cbarlabel = "Reflectivity (dBZ)", plot_cbar = True):
+    """ Plot radar in polar coordinates."""
     site_abb, site_text, dt = metadata(filename)
     pl.figure(figsize=(10,8))
     ax, pm = wrl.vis.plot_ppi(data, cmap=cm)
@@ -54,9 +56,7 @@ def clutter_gabella(data, filename):
 
 
 def attcorr(data_no_clutter, filename):
-    """
-    Calculate integrated attenuation for each bin (Kraemer et al., 2008 and Jacobi et al., 2016).
-    """       
+    """Calculate integrated attenuation for each bin (Kraemer et al., 2008 and Jacobi et al., 2016)."""       
     site_abb, site_text, dt = metadata(filename)
     att = wrl.atten.correct_attenuation_constrained(data_no_clutter, 
                                                     a_max=1.67e-4, a_min=2.33e-5, n_a=100, b_max=0.7, b_min=0.65, n_b=6, # coefficients
@@ -69,6 +69,7 @@ def attcorr(data_no_clutter, filename):
 
 
 def plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, bin):
+    """Plot attenuation correction for single bins."""
     pl.figure(figsize=(10,8))
     pl.plot(data_no_clutter[bin], label="no AC", c="r", lw=1)
     pl.plot(data_attcorr[bin], label="with AC", c="g", lw=1)
@@ -82,6 +83,7 @@ def plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, bin):
 
 
 def plot_attenuation_mean_bin(data_no_clutter, data_attcorr, filename):
+    """Plot attenuation correction for all bins averaged."""
     pl.figure(figsize=(10,8))
     pl.plot(np.mean(data_no_clutter, axis=1), label="no AC", c="r", lw=1)
     pl.plot(np.mean(data_attcorr, axis=1), label="AC done", c="g", lw=1)
@@ -95,6 +97,7 @@ def plot_attenuation_mean_bin(data_no_clutter, data_attcorr, filename):
 
 
 def plot_raindepths(depths, filename):
+    """Plot rain depths in polar coordinates."""
     pl.figure(figsize=(10, 8))
     ax, im = wrl.vis.plot_ppi(depths, cmap=cm)
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
@@ -120,17 +123,21 @@ def rain_depths(data, filename, duration_sec=300):
 
 
 def plot_gridded(xgrid, ygrid, gridded, filename, subtitle, proj_src, proj_trg_epsgno = 25832):
+    """Plot gridded field with defined epsg number."""
     xgrid, ygrid = wrl.georef.reproject(xgrid, ygrid, projection_source=proj_src, projection_target = wrl.georef.epsg_to_osr(proj_trg_epsgno))
     pl.figure(figsize=(10, 8))
     ax = pl.subplot(111, aspect="equal")
-    pm = pl.pcolormesh(xgrid, ygrid, gridded, cmap=cm, vmax=0.35)
+    pm = pl.pcolormesh(xgrid, ygrid, gridded, cmap=cm, vmax=0.3)
     cbar = pl.colorbar(pm, shrink=0.75)
     cbar.ax.tick_params(labelsize=15) 
-    cbar.set_label("5 min - Rain depths (mm)", fontsize=15)
-    pl.xticks(fontsize=15)
+    cbar.set_label("5 min - rain depths (mm)", fontsize=15)
+    pl.xticks(ticks=[400000, 500000, 600000, 700000, 800000], fontsize=15)
     pl.yticks(fontsize=15)
     pl.xlabel("Easting (m)", fontsize=15)
     pl.ylabel("Northing (m)", fontsize=15)
+    pl.ylim(bottom=5300000)
+    pl.xlim(right=800000)
+    pl.grid()
     site_abb, site_text, dt = metadata(filename)
     pl.title(f'{dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\n{subtitle}', fontsize=17)
     pl.savefig(f"images/radar_dx_{site_abb}_{filename[15:25]}_grid_utm.png", dpi=600)    
@@ -139,9 +146,7 @@ def plot_gridded(xgrid, ygrid, gridded, filename, subtitle, proj_src, proj_trg_e
 
 
 def get_depths(filename):
-    """ 
-    Read data from file. Correct clutter and attenuation. Calculate and return 5min - rain depths as (360   ,128) - array.
-    """
+    """Read data from file. Correct clutter and attenuation. Calculate and return 5min - rain depths as (360   ,128) - array."""
     f = wrl.util.get_wradlib_data_file('example_data/'+filename)
     data, metadata = wrl.io.read_dx(f)
     plot_radar(data, filename, "Raw data", "raw")
@@ -158,6 +163,7 @@ def get_depths(filename):
 
 
 def get_coords(depths, radar_loc, centerxy):
+    """Project polar coordinates into a global xyz cartesian coordinates and grid data."""
     # Get cartesian coordinates in xyz-space.
     elevation = 0.5 # in degree
     azimuths = np.arange(0,360)

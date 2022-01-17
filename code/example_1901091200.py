@@ -1,11 +1,12 @@
 import imp
 import sys
+from turtle import right
 import numpy as np
 import wradlib as wrl
 import matplotlib.pylab as pl
 
 from colorbar import cm
-from func import plot_radar, plot_raindepths, plot_gridded, clutter_gabella, attcorr, plot_attenuation_mean_bin, plot_attenuation_per_bin, rain_depths, get_coords, get_depths, blending_radar_domains, blending_radar_domains
+from func import metadata, plot_radar, plot_raindepths, plot_gridded, clutter_gabella, attcorr, plot_attenuation_mean_bin, plot_attenuation_per_bin, rain_depths, get_coords, get_depths, blending_radar_domains, blending_radar_domains
 
 
 filename_drs = "raa00-dx_10488-1901091200-drs---bin"
@@ -19,6 +20,8 @@ site_loc_pro = (13.858212, 52.648667, 194)
 site_loc_umd = (11.176091, 52.160096, 185)
 site_loc_neu = (11.135034, 50.500114, 880)
 site_loc_eis = (12.402788, 49.540667, 799)
+
+# site_abb, site_text, dt = metadata(filename_drs)
 
 # Calculate and plot rain depths in polar coordinates.
 depths_drs = get_depths(filename_drs)
@@ -63,13 +66,17 @@ np.savetxt("code/utmgrid.txt", np.column_stack((xgrid, ygrid)), fmt = "%.4f")
 # Plotting
 fig = pl.figure(figsize=(10,8))
 ax = pl.subplot(111, aspect="equal")
-pl.pcolormesh(xgrid, ygrid, domain_final, cmap=cm, vmax=0.35)
+pl.pcolormesh(xgrid, ygrid, domain_final, cmap=cm, vmax=0.3)
 cbar = pl.colorbar()
 cbar.ax.tick_params(labelsize=15) 
 cbar.set_label("5 min - rain depths (mm)", fontsize=15)
 pl.grid(lw=0.5)
+pl.xticks(ticks=[400000, 500000, 600000, 700000, 800000], fontsize=15)
+pl.ylim(bottom=5300000)
+pl.xlim(left=350000, right=800000)
 pl.xlabel("Easting", fontsize=15)
 pl.ylabel("Northing", fontsize=15)
+pl.title('09-01-2019 12:00 UTC\nradar sites drs, umd, neu, eis, pro\nUTM Zone 33N (EPSG 25832)', fontsize=17)
 pl.savefig(f"images/composite_{filename_drs[15:25]}_utm", dpi=600)
 
 
