@@ -119,10 +119,11 @@ def rain_depths(data, filename, duration_sec=300):
     return depths
 
 
-def plot_gridded(xgrid, ygrid, gridded, filename, subtitle):
+def plot_gridded(xgrid, ygrid, gridded, filename, subtitle, proj_src, proj_trg_epsgno = 25832):
+    xgrid, ygrid = wrl.georef.reproject(xgrid, ygrid, projection_source=proj_src, projection_target = wrl.georef.epsg_to_osr(proj_trg_epsgno))
     pl.figure(figsize=(10, 8))
     ax = pl.subplot(111, aspect="equal")
-    pm = pl.pcolormesh(xgrid, ygrid, gridded, cmap=cm)
+    pm = pl.pcolormesh(xgrid, ygrid, gridded, cmap=cm, vmax=0.35)
     cbar = pl.colorbar(pm, shrink=0.75)
     cbar.ax.tick_params(labelsize=15) 
     cbar.set_label("5 min - Rain depths (mm)", fontsize=15)
@@ -132,5 +133,58 @@ def plot_gridded(xgrid, ygrid, gridded, filename, subtitle):
     pl.ylabel("Northing (m)", fontsize=15)
     site_abb, site_text, dt = metadata(filename)
     pl.title(f'{dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\n{subtitle}', fontsize=17)
-    pl.savefig(f"images/radar_dx_{site_abb}_{filename[15:25]}_grid_1km.png", dpi=600)    
+    pl.savefig(f"images/radar_dx_{site_abb}_{filename[15:25]}_grid_utm.png", dpi=600)    
+    print(filename, np.nanmax(gridded))
     return 0
+
+
+def get_depths(filename):
+    """ 
+    Read data from file. Correct clutter and attenuation. Calculate and return 5min - rain depths as (360   ,128) - array.
+    """
+    f = wrl.util.get_wradlib_data_file('example_data/'+filename)
+    data, metadata = wrl.io.read_dx(f)
+    plot_radar(data, filename, "Raw data", "raw")
+    clmap, data_no_clutter = clutter_gabella(data, filename)
+    att, data_attcorr = attcorr(data_no_clutter, filename)
+    plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, 0)
+    plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, 90)
+    plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, 180)
+    plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, 270)
+    plot_attenuation_mean_bin(data_no_clutter, data_attcorr, filename)
+    depths = rain_depths(data_attcorr, filename, 300)
+    plot_raindepths(depths, filename)    
+    return depths
+
+
+def get_coords(depths, radar_loc, centerxy):
+    # Get cartesian coordinates in xyz-space.
+    elevation = 0.5 # in degree
+    azimuths = np.arange(0,360)
+    ranges = np.arange(0, 128000., 1000.)
+    polargrid = np.meshgrid(ranges, azimuths)
+    coords, rad = wrl.georef.spherical_to_xyz(polargrid[0], polargrid[1], elevation, radar_loc)
+    x = coords[..., 0]
+    y = coords[..., 1]
+    x = x + centerxy[0]
+    y = y + centerxy[1]
+    
+    # Gridding -> 2D array
+    xgrid = np.linspace(-350000,350000,700)
+    ygrid = np.linspace(-350000,350000,700)
+    grid_xy = np.meshgrid(xgrid, ygrid)
+    grid_xy = np.vstack((grid_xy[0].ravel(), grid_xy[1].ravel())).transpose()
+    xy=np.concatenate([x.ravel()[:,None],y.ravel()[:,None]], axis=1)
+    gridded = wrl.comp.togrid(src=xy, trg=grid_xy, 
+                              radius=128000., 
+                              center = centerxy,
+                              data=depths.ravel(), interpol=wrl.ipol.Idw)
+
+    # gridded = np.ma.masked_invalid(gridded).reshape((len(xgrid), len(ygrid)))
+    gridded = gridded.reshape((len(xgrid), len(ygrid)))
+    return xgrid, ygrid, gridded, rad
+
+
+def blending_radar_domains(domain, gridded_data):
+    """Change nan's to zeros. Choose element wise maximum."""
+    return np.maximum(domain, np.nan_to_num(gridded_data))
