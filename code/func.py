@@ -3,7 +3,7 @@ import matplotlib.pylab as pl
 import wradlib as wrl
 import numpy as np
 
-from colorbar import cm
+from colorbar import cm, cm_binary
 
 
 def metadata(filename):
@@ -24,13 +24,14 @@ def metadata(filename):
     return site_abb, site_text, dt
 
 
-def plot_radar(data, filename, subtitle, what, cm="viridis", cbarlabel = "Reflectivity (dBZ)"):
+def plot_radar(data, filename, subtitle, what, cm="viridis", cbarlabel = "Reflectivity (dBZ)", plot_cbar = True):
     site_abb, site_text, dt = metadata(filename)
     pl.figure(figsize=(10,8))
     ax, pm = wrl.vis.plot_ppi(data, cmap=cm)
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
-    cbar = pl.colorbar(pm, shrink=0.75)
-    cbar.set_label(cbarlabel)
+    if plot_cbar == True:
+        cbar = pl.colorbar(pm, shrink=0.75)
+        cbar.set_label(cbarlabel)
     pl.xlim([-135, 135])
     pl.ylim([-135, 135])
     pl.title(f'{dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\n{subtitle}', fontsize=11)
@@ -47,7 +48,7 @@ def clutter_gabella(data, filename):
     clmap = wrl.clutter.filter_gabella(data, wsize=5, thrsnorain=0., tr1=6., n_p=8, tr2=1.3)
     data_no_clutter = wrl.ipol.interpolate_polar(data, clmap)
     site_abb, site_text, dt = metadata(filename)
-    plot_radar(data=clmap, filename=filename, what="cluttermap", subtitle="Detected clutter")
+    plot_radar(data=clmap, filename=filename, what="cluttermap", subtitle="Detected clutter", cm=cm_binary, plot_cbar=False)
     plot_radar(data=data_no_clutter, filename=filename, what="noclutter", subtitle="After clutter correction")    
     return clmap, data_no_clutter    
 
