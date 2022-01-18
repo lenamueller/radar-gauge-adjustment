@@ -1,7 +1,7 @@
 opendata.dwd.de/*
 geodata/koordinaten-radarverbund.pdf
 
-radargauge-env/*
+myenv/*
 
 code/__pycache__/*
 code/grid_xy.txt
