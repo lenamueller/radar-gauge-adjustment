@@ -11,3 +11,6 @@ images/radar_dx_umd*
 images/radar_dx_pro*
 images/radar_dx_neu*
 images/radar_dx_eis*
+adjustment_data.png
+adjustment_veri.png
+code/adjustment_example.py
