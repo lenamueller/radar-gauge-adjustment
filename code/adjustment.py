@@ -82,3 +82,85 @@ ax = fig.add_subplot(224, aspect='equal')
 scatterplot(truth, multadjusted, 'Adjusted (Mult.) vs. Truth')
 pl.tight_layout()
 pl.savefig("adjustment_veri")
+
+
+
+"""
+# Read gauge data.
+gauges_data = []
+file_data = open('opendata.dwd.de/example_data/produkt_ein_min_rr_20190101_20190131_01048.txt')
+for row in file_data:
+    gauges_data.append(row.split(";"))
+gauges_data = np.array(gauges_data)
+
+# gauges_metadata = []
+# file_data = open('geodata/RR_stations_150km_UTM.csv')
+# for row in file_data:
+#     gauges_metadata.append(row.split(";"))
+    
+# gauges_metadata = np.array(gauges_metadata)
+
+
+# Create grid.
+grid_coords = wrl.util.gridaspoints(ygrid, xgrid)
+print(grid_coords)
+
+# creating obs_coordinates
+obs_ix=[1,2]    # gauge indices
+obs_coords = grid_coords[obs_ix]
+
+# Apply RADAR-gauge adjustment methods.
+# Mean Field Bias Adjustment
+mfbadjuster = wrl.adjust.AdjustMFB(obs_coords, grid_coords)
+mfbadjusted = mfbadjuster(obs, radar)
+
+# Additive Error Model
+addadjuster = wrl.adjust.AdjustAdd(obs_coords, grid_coords)
+addadjusted = addadjuster(obs, radar)
+
+# Multiplicative Error Model
+multadjuster = wrl.adjust.AdjustMultiply(obs_coords, grid_coords)
+multadjusted = multadjuster(obs, radar)
+
+# Plot results
+
+def gridplot(data, title):
+    xplot = np.append(xgrid, xgrid[-1] + 1.) - 0.5
+    yplot = np.append(ygrid, ygrid[-1] + 1.) - 0.5
+    grd = ax.pcolormesh(xplot, yplot, data.reshape(len(xgrid), len(ygrid)), vmin=0, vmax=maxval)
+    ax.scatter(obs_coords[:, 0], obs_coords[:, 1], c=obs.ravel(),
+               marker='s', s=50, vmin=0, vmax=maxval)
+    #pl.colorbar(grd, shrink=0.5)
+    pl.title(title)
+    
+# Maximum value (used for normalisation of colorscales)
+maxval = np.max(np.concatenate((truth, radar, obs, addadjusted)).ravel())
+
+fig = pl.figure(figsize=(10, 6))
+
+# True rainfall
+ax = fig.add_subplot(231, aspect='equal')
+gridplot(truth, 'True rainfall')
+
+# Unadjusted radar rainfall
+ax = fig.add_subplot(232, aspect='equal')
+gridplot(radar, 'Radar rainfall')
+
+# Adjusted radar rainfall (MFB)
+ax = fig.add_subplot(234, aspect='equal')
+gridplot(mfbadjusted, 'Adjusted (MFB)')
+
+# Adjusted radar rainfall (additive)
+ax = fig.add_subplot(235, aspect='equal')
+gridplot(addadjusted, 'Adjusted (Add.)')
+
+# Adjusted radar rainfall (multiplicative)
+ax = fig.add_subplot(236, aspect='equal')
+gridplot(multadjusted, 'Adjusted (Mult.)')
+
+pl.tight_layout()
+
+# Evaluate RADAR-gauge adjustment methods. Verification.
+
+
+"""
