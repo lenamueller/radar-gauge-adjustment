@@ -4,7 +4,7 @@
 set -e
 
 # activate virutal environment
-source radargauge-env/bin/activate
+source myenv/bin/activate
 
 # set data path for wradlib
 export WRADLIB_DATA=/home/lena/Documents/projects/radar-gauge-adjustment/opendata.dwd.de/
