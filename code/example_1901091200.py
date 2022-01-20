@@ -72,7 +72,7 @@ domain = blending_radar_domains(domain, gridded_neu)
 # Save grid information to files.
 np.savetxt("geodata/xgrid.txt", xgrid, fmt = "%.4f")
 np.savetxt("geodata/ygrid.txt", ygrid, fmt = "%.4f")
-np.savetxt("geodata/griddata.txt", domain, fmt = "%.4f")
+np.savetxt("geodata/griddata_5min.txt", domain, fmt = "%.4f")
 
 fig = pl.figure(figsize=(10,8))
 ax = pl.subplot(111, aspect="equal") # aspect=111/71
@@ -90,4 +90,4 @@ pl.grid(lw=0.5)
 pl.xlabel("Easting", fontsize=12)
 pl.ylabel("Northing", fontsize=12)
 pl.title('09-01-2019 12:00 UTC\nDWD RADAR composite\nUTM zone 33N (EPSG 32633)', fontsize=12)
-pl.savefig(f"images/composite_{filename_drs[15:25]}_utm", dpi=600)
+pl.savefig(f"images/composite_{filename_drs[15:25]}_utm5min", dpi=600)
