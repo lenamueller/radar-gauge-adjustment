@@ -77,7 +77,9 @@ Apply ZR-Relation with coefficients a=200 and b=1.6. Integrate rain rates for 5m
 
 ### 5. Create composite and georeference
 Contains radar sites Dresden (drs), Ummendorf (umd), Neuhaus (neu), Eisberg (eis) and Prötzel (pro).   
-<img src="images/composite_1901091200_utm.png" alt="composite_1901091200_utm" width="700"/>
+
+#### 5min and 60min rain accumulation
+<img src="images/composite_1901091200_utm5min.png" alt="composite_1901091200_utm5min" width="400"/> <img src="images/composite_1901091200_utm60min.png" alt="composite_1901091200_utm60min" width="400"/>
 
 ### 6. Download and read gauge-data 
 Todo   
