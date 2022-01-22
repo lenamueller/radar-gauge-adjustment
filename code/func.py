@@ -108,7 +108,7 @@ def get_depths(filename):
     plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, 180)
     plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, 270)
     plot_attenuation_mean_bin(data_no_clutter, data_attcorr, filename)
-    depths = rain_depths(data_attcorr, filename, 300)
+    depths = rain_depths(data_attcorr, filename, 300*12)
     plot_raindepths(depths, filename)    
     return depths
 
@@ -130,7 +130,7 @@ def plot_raindepths(depths, filename):
     ax, im = wrl.vis.plot_ppi(depths, cmap=cm)
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
     cbar = pl.colorbar(im, shrink=0.75)
-    cbar.set_label("5 min - rain depths (mm)")
+    cbar.set_label("60 min - rain depths (mm)")
     pl.xlim([-135, 135])
     pl.ylim([-135, 135])
     site_abb, site_text, dt = metadata(filename)
