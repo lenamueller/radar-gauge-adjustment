@@ -95,10 +95,9 @@ np.savetxt("geodata/ygrid.txt", ygrid, fmt = "%.4f")
 np.savetxt("geodata/griddata_60min.txt", radar, fmt = "%.4f")
 
 # Plot composite.
-print("Plot radar composite.")
 fig = pl.figure(figsize=(10,8))
 ax = pl.subplot(111, aspect="equal") # aspect=111/71
-pm = pl.pcolormesh(xgrid, ygrid, radar, cmap=cm, vmax=4)
+pm = pl.pcolormesh(xgrid, ygrid, radar, cmap=cm, vmax=4.5)
 cbar = pl.colorbar(pm)
 cbar.set_label("60 min - rain depths (mm)", fontsize=12)
 cm.set_bad(color='grey')
@@ -169,16 +168,17 @@ with open("opendata.dwd.de/example_data/RR_Stundenwerte_Beschreibung_Stationen_n
 # Create gauge array.
 gauge_array = np.empty((700,700))
 gauge_array[:] = np.NaN
+gauge_indices = []
 for g in range(len(gaugedata["id"])):
     east = gaugedata["easting"][g]
     north = gaugedata["northing"][g]
     prec = gaugedata["prec_mm"][g]
     x_i = list(xgrid).index(east)
     y_i = list(ygrid).index(north)
+    gauge_indices.append([y_i, x_i])
     gauge_array[y_i][x_i] = prec
 
 # Plot gauges data.
-print("Plot gauges.")
 fig = pl.figure(figsize=(10,8))
 ax = pl.subplot(111, aspect="equal")
 pm = pl.pcolormesh(xgrid, ygrid, gauge_array, cmap=cm, vmax=max(gaugedata["prec_mm"]))
@@ -194,12 +194,15 @@ pl.grid(lw=0.5)
 pl.title('09-01-2019 12:00 UTC\nDWD gauge data\nUTM zone 33N (EPSG 32633)', fontsize=12)
 pl.savefig(f"images/gaugedata_{filename_drs[15:25]}_utm60min", dpi=600)
 
-
-
 # Interpolate gauge array.
-gauge_array_int = sp.interpolate.griddata(values = gauge_array, xi = , method="linear")
+all_indices = ([[x, y] for x in range(700) for y in range(700)])
+gauge_array_int = sp.interpolate.griddata(points = gauge_indices, 
+                                          values = gaugedata["prec_mm"], 
+                                          xi = all_indices,
+                                          method="cubic")
+gauge_array_int = gauge_array_int.reshape((700,700))
 
-print("Plot gauges.")
+# Plot interpolated gauges.
 fig = pl.figure(figsize=(10,8))
 ax = pl.subplot(111, aspect="equal")
 pm = pl.pcolormesh(xgrid, ygrid, gauge_array_int, cmap=cm, vmax=max(gaugedata["prec_mm"]))
@@ -213,9 +216,7 @@ pl.xlim(50000, 600000)
 pl.ylim(min(ygrid), 6000000)
 pl.grid(lw=0.5)
 pl.title('09-01-2019 12:00 UTC\nDWD gauge data\nUTM zone 33N (EPSG 32633)', fontsize=12)
-pl.savefig(f"images/gaugedata_{filename_drs[15:25]}_utm60min_interpol", dpi=600)
-
-# Calculate auge adjustment.
+pl.savefig(f"images/gaugedata_{filename_drs[15:25]}_utm60min_interpol_cub", dpi=600)
 
 # radar data: 1D-array, radar coords: 2D-array
 radar_1d = radar.reshape([700*700]) # 1D-array (700*700) for radar data
@@ -241,46 +242,54 @@ mfbadjuster = adjust.AdjustMFB(obs_coords, radar_coords)
 mfbadjusted = mfbadjuster(obs, radar_1d)
 mfbadjusted_arr = mfbadjusted.reshape(gridshape)
 
-# Plot additive adjustment.
-fig = pl.figure(figsize=(10, 8))
-ax = pl.subplot(111, aspect="equal")
-pl.xlim(min(xgrid), max(xgrid))
-pl.ylim(min(ygrid), max(ygrid))
-pm = ax.pcolormesh(xgrid, ygrid, addadjusted_arr, cmap=cm, vmin=0)
-cbar = pl.colorbar(pm)
-pl.title(f"Additive adjustment\nAdditive value between {np.round(np.nanmin(addadjusted_arr-radar),2)} and {np.round(np.nanmax(addadjusted_arr-radar),2)}")
-pl.savefig("adjustment_add", dpi=600)
+mixadjuster = adjust.AdjustMixed(obs_coords, radar_coords)
+mixadjusted = mixadjuster(obs, radar_1d)
+mixadjusted_arr = mixadjusted.reshape(gridshape)
 
-# Plot multiplicative adjustment.
-fig = pl.figure(figsize=(10, 8))
-ax = pl.subplot(111, aspect="equal")
-pl.xlim(min(xgrid), max(xgrid))
-pl.ylim(min(ygrid), max(ygrid))
-pm = ax.pcolormesh(xgrid, ygrid, multadjusted_arr, cmap=cm, vmin=0)
-cbar = pl.colorbar(pm)
-pl.title(f"Multiplicative adjustment\nfactor between {np.round(np.nanmin(multadjusted_arr - radar),2)} and {np.round(np.nanmax(multadjusted_arr - radar),2)}")
-pl.savefig("adjustment_mul", dpi=600)
+def plot_grid(data, plottitle, filename):
+    """ Plot gridded data."""
+    fig = pl.figure(figsize=(10, 8))
+    ax = pl.subplot(111, aspect="equal")
+    pl.xlim(min(xgrid), max(xgrid))
+    pl.ylim(min(ygrid), max(ygrid))
+    pm = ax.pcolormesh(xgrid, ygrid, data, cmap=cm, vmin=0, vmax=4.5)
+    cbar = pl.colorbar(pm)
+    cm.set_bad(color='grey')
+    cbar.set_label("60 min - rain depths (mm)", fontsize=12)
+    pl.xlabel("Easting (m)", fontsize=12)
+    pl.ylabel("Northing (m)", fontsize=12)
+    ax.ticklabel_format(useOffset=False, style='plain')
+    pl.xlim(50000, 600000)
+    pl.ylim(min(ygrid), 6000000)
+    pl.grid(lw=0.5)
+    pl.title(plottitle, fontsize=12)
+    # pl.savefig("images/"+filename, dpi=600)
 
-# Plot difference in additive adjustment.
-fig = pl.figure(figsize=(10, 8))
-ax = pl.subplot(111, aspect="equal")
-pl.xlim(min(xgrid), max(xgrid))
-pl.ylim(min(ygrid), max(ygrid))
-diff = addadjusted_arr - radar
-pm = ax.pcolormesh(xgrid, ygrid, diff, cmap=cm)
-cbar = pl.colorbar(pm)
-pl.title("Additive adjustment difference")
-pl.savefig("adjustment_add_diff", dpi=600)
+# Plot adjusted radar data.
+plot_grid(addadjusted_arr, "Additive adjustment (spatially variable)", "adjustment_add")
+plot_grid(multadjusted_arr, "Multiplicative adjustment (spatially variable)", "adjustment_mul")
+plot_grid(mfbadjusted_arr, "Additive adjustment (spatially uniform)", "adjustment_mfb")
+plot_grid(mixadjusted_arr, "Additive-multiplicative-mixed adjustment (spatially variable)", "adjustment_mixed")
 
-# Plot difference in multiplicative adjustment.
-fig = pl.figure(figsize=(10, 8))
-ax = pl.subplot(111, aspect="equal")
-pl.xlim(min(xgrid), max(xgrid))
-pl.ylim(min(ygrid), max(ygrid))
-diff = multadjusted_arr - radar
-pm = ax.pcolormesh(xgrid, ygrid, diff, cmap=cm)
-cbar = pl.colorbar(pm)
-pl.title("Multiplicative adjustment difference")
-pl.savefig("adjustment_mul_diff", dpi=600)
+# Plot errors.
+plot_grid(addadjusted_arr - radar, "Additive error (spatially variable)", "adjustment_add_diff")
+plot_grid(multadjusted_arr - radar, "Multiplicative error (spatially variable)", "adjustment_mul_diff")
+plot_grid(mfbadjusted_arr - radar, "adjustment_mfb_diff (spatially uniform)", "adjustment_mfb_diff")
+plot_grid(mixadjusted_arr - radar, "Additive-multiplicative-mixed error (spatially variable)", "adjustment_mixed_diff")
 
-print("Hamsters are cute :) :) :)")
+# Evaluation
+fig = pl.figure(figsize=(10, 6))
+n_gauges = plt.hist(obs, 200, density=True, histtype="step", cumulative=True, label="gauges", log=False, linewidth=1.5)
+n_radar = plt.hist(radar_1d, 200, density=True, histtype="step", cumulative=True, label="raw radar", log=False, linewidth=1.5)
+n_add = plt.hist(addadjusted, 200, density=True, histtype="step", cumulative=True, label="add (var)", log=False, linewidth=1.5)
+n_mul = plt.hist(multadjusted, 200, density=True, histtype="step", cumulative=True, label="mul (var)", log=False, linewidth=1.5)
+n_mulconst = plt.hist(mfbadjusted, 200, density=True, histtype="step", cumulative=True, label="mul (const)", log=False, linewidth=1.5)
+n_mix = plt.hist(mixadjusted, 200, density=True, histtype="step", cumulative=True, label="add-mul-mix (var)", log=False, linewidth=1.5)
+plt.legend(loc="lower right")
+plt.grid()
+plt.xlim([0,4.5])
+plt.ylim([0.4,1])
+plt.title("precipitation CDF of raw radar data and different adjustment methods", fontsize=12)
+plt.savefig("images/adjustment_eval", dpi=600)
+
+# print(rmse(n_gauges, n_add), rmse(n_gauges, n_mul), rmse(n_gauges, n_mulconst), rmse(n_gauges, n_mix))
