@@ -72,16 +72,16 @@ Calculate integrated attenuation for each bin (Kraemer et al. 2008, Jacobi et al
 <img src="images/radar_dx_drs_1901091200_attcorr_bin90.png" alt="radar_dx_drs_1901091200_attcorr_bin90" width="400"/> <img src="images/radar_dx_drs_1901091200_attcorr_bin270.png" alt="radar_dx_drs_1901091200_attcorr_bin270" width="400"/>
 
 ### 4. Calculate rain depths
-Apply ZR-Relation with coefficients a=200 and b=1.6. Integrate rain rates for 5min.   
+Apply ZR-Relation with coefficients a=200 and b=1.6. Integrate rain rates for 60min.   
 <img src="images/radar_dx_drs_1901091200_raindepths.png" alt="radar_dx_drs_1901091200_raindepths" width="400"/>
 
 ### 5. Create composite and georeference
-Contains radar sites Dresden (drs), Ummendorf (umd), Neuhaus (neu), Eisberg (eis) and Prötzel (pro).   
-
-#### 5min and 60min rain accumulation
-<img src="images/composite_1901091200_utm5min.png" alt="composite_1901091200_utm5min" width="400"/> <img src="images/composite_1901091200_utm60min.png" alt="composite_1901091200_utm60min" width="400"/>
+Contains 60min rain accumulation for radar sites Dresden (drs), Ummendorf (umd), Neuhaus (neu), Eisberg (eis) and Prötzel (pro).   
+<img src="images/composite_1901091200_utm60min.png" alt="composite_1901091200_utm60min" width="500"/>
 
 ### 6. Download and read gauge-data 
+<img src="images/gaugedata_1901091200_utm60min.png" alt="gaugedata_1901091200_utm60min" width="500"/>
+
 Todo   
 Data source:  
 1h-data: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/   
