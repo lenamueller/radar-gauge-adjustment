@@ -11,44 +11,16 @@ Run latest radar images with ```source run.sh``` (todo).
 
 
 ## Packages and Dependencies
-certifi            2021.10.8
-cftime             1.5.1.1
-charset-normalizer 2.0.10
-cloudpickle        2.0.0
-cycler             0.11.0
-dask               2021.12.0
-DateTime           4.3
-deprecation        2.1.0
-fonttools          4.28.5
-fsspec             2021.11.1
-GDAL               3.4.1
-h5netcdf           0.12.0
-h5py               3.6.0
-idna               3.3
-kiwisolver         1.3.2
-locket             0.2.1
-matplotlib         3.5.1
-netCDF4            1.5.8
-numpy              1.22.0
-packaging          21.3
-pandas             1.3.5
-partd              1.2.0
-Pillow             9.0.0
-pip                21.3.1
-pyparsing          3.0.6
-python-dateutil    2.8.2
-pytz               2021.3
-PyYAML             6.0
-requests           2.27.1
-scipy              1.7.3
-setuptools         58.1.0
-six                1.16.0
-toolz              0.11.2
-urllib3            1.26.8
-wradlib            1.13.0
-xarray             0.20.2
-xmltodict          0.12.0
-zope.interface     5.4.0
+pip 21.3.1
+cartopy 0.20.2
+DateTime 4.3
+matplotlib 3.5.1
+netCDF4 1.5.8
+numpy 1.22.0
+pandas 1.3.5
+scipy 1.7.3
+wradlib 1.13.0
+pint_xarray
 
 ## Workflow (test case 09.01.2019 12:00 UTC)
 ### 1. Read DX-data 
@@ -77,15 +49,17 @@ Apply ZR-Relation with coefficients a=200 and b=1.6. Integrate rain rates for 60
 
 ### 5. Create composite and georeference
 Contains 60min rain accumulation for radar sites Dresden (drs), Ummendorf (umd), Neuhaus (neu), Eisberg (eis) and Prötzel (pro).   
+Requires step 1. to 4. for each radar site.   
 <img src="images/composite_1901091200_utm60min.png" alt="composite_1901091200_utm60min" width="500"/>
 
-### 6. Download and read gauge-data 
-<img src="images/gaugedata_1901091200_utm60min.png" alt="gaugedata_1901091200_utm60min" width="500"/>
-
-Todo   
+### 6. Read gauge-data 
 Data source:  
 1h-data: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/   
 1min-data: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/1_minute/precipitation/
 
-### 7. Apply and evaluate RADAR-gauge adjustment methods
-Todo
+### 7. Apply RADAR-gauge adjustment methods
+<img src="images/adjustment_add.png" alt="adjustment_add" width="400"/> <img src="images/adjustment_mfb.png" alt="adjustment_mfb" width="400"/>
+<img src="images/adjustment_mul.png" alt="adjustment_mul" width="400"/> <img src="images/adjustment_mixed.png" alt="adjustment_mixed" width="400"/>
+
+### 8. Evaluation
+<img src="images/adjustment_eval.png" alt="adjustment_eval" width="500"/>
