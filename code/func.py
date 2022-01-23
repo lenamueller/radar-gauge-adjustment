@@ -2,6 +2,7 @@ import datetime
 import matplotlib.pylab as pl
 import wradlib as wrl
 import numpy as np
+import math
 
 from colorbar import cm, cm_binary
 
@@ -150,3 +151,18 @@ def max_from_arrays(array1, array2):
     else:
         raise ValueError("Arrays' shape don't match.") 
     return newarray
+
+# def rmse(target, predict):
+#     l = []
+#     for i in range(len(target)):
+#         l.append(math.pow((target[i] - predict[i]),2))
+#     return math.sqrt(np.mean(l))
+
+def frequency(feature_list, bin_number, bin_width):  
+    """ binning function. bin_number includes one for zero and one for infinity """
+    frequency_list = [0] * bin_number
+    for i in feature_list:
+        index = math.ceil(i/bin_width)
+        index = min(index, len(frequency_list)-1)
+        frequency_list[index]+=1
+    return frequency_list
