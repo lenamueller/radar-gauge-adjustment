@@ -137,3 +137,16 @@ def plot_raindepths(depths, filename):
     pl.title(f'{dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\nAfter applying Z-R-relation', fontsize=11)
     # pl.savefig(f"images/radar_dx_{site_abb}_{filename[15:25]}_raindepths.png", dpi=600)
     return 0
+
+def max_from_arrays(array1, array2):
+    """Choose element wise maximum. Keeps NaN's as NaN's if both are NaN."""
+    if array1.shape == array2.shape:
+        newarray = np.zeros(array2.shape)
+        for i in range(len(array1)):
+            for j in range(len(array1[0])):
+                val1 = array1[i][j]
+                val2 = array2[i][j]
+                newarray[i][j] = np.nanmax([val1, val2]);
+    else:
+        raise ValueError("Arrays' shape don't match.") 
+    return newarray
