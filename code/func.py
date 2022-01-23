@@ -108,7 +108,7 @@ def get_depths(filename):
     plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, 180)
     plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, 270)
     plot_attenuation_mean_bin(data_no_clutter, data_attcorr, filename)
-    depths = rain_depths(data_attcorr, filename, 300*12)
+    depths = rain_depths(data_attcorr, filename, duration_sec=300*12)
     plot_raindepths(depths, filename)    
     return depths
 

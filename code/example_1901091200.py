@@ -3,7 +3,7 @@ from os import listdir
 from os.path import isfile, join
 import datetime
 import zipfile
-import pandas as pd
+import scipy as sp
 import numpy as np
 import wradlib as wrl
 import matplotlib.pylab as pl
@@ -185,8 +185,8 @@ pm = pl.pcolormesh(xgrid, ygrid, gauge_array, cmap=cm, vmax=max(gaugedata["prec_
 cbar = pl.colorbar(pm)
 cm.set_bad(color='grey')
 cbar.set_label("60 min - rain depths (mm)", fontsize=12)
-pl.xlabel("Easting (m)")
-pl.ylabel("Northing (m)")
+pl.xlabel("Easting (m)", fontsize=12)
+pl.ylabel("Northing (m)", fontsize=12)
 ax.ticklabel_format(useOffset=False, style='plain')
 pl.xlim(50000, 600000)
 pl.ylim(min(ygrid), 6000000)
@@ -194,8 +194,26 @@ pl.grid(lw=0.5)
 pl.title('09-01-2019 12:00 UTC\nDWD gauge data\nUTM zone 33N (EPSG 32633)', fontsize=12)
 pl.savefig(f"images/gaugedata_{filename_drs[15:25]}_utm60min", dpi=600)
 
-# Interpolate gauge array.
 
+
+# Interpolate gauge array.
+gauge_array_int = sp.interpolate.griddata(values = gauge_array, xi = , method="linear")
+
+print("Plot gauges.")
+fig = pl.figure(figsize=(10,8))
+ax = pl.subplot(111, aspect="equal")
+pm = pl.pcolormesh(xgrid, ygrid, gauge_array_int, cmap=cm, vmax=max(gaugedata["prec_mm"]))
+cbar = pl.colorbar(pm)
+cm.set_bad(color='grey')
+cbar.set_label("60 min - rain depths (mm)", fontsize=12)
+pl.xlabel("Easting (m)")
+pl.ylabel("Northing (m)")
+ax.ticklabel_format(useOffset=False, style='plain')
+pl.xlim(50000, 600000)
+pl.ylim(min(ygrid), 6000000)
+pl.grid(lw=0.5)
+pl.title('09-01-2019 12:00 UTC\nDWD gauge data\nUTM zone 33N (EPSG 32633)', fontsize=12)
+pl.savefig(f"images/gaugedata_{filename_drs[15:25]}_utm60min_interpol", dpi=600)
 
 # Calculate auge adjustment.
 
