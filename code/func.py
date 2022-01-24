@@ -87,7 +87,7 @@ def plot_attenuation_mean_bin(data_no_clutter, data_attcorr, filename):
     pl.legend(fontsize=14)
     site_abb, site_text, dt = metadata(filename)
     pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\nAC (averaged)', fontsize=14)
-    pl.savefig(f"images/{site_abb}/(radar_dx_{site_abb}_{filename[15:25]}_attcorr_meanbin.png", dpi=600)
+    pl.savefig(f"images/{site_abb}/radar_dx_{site_abb}_{filename[15:25]}_attcorr_meanbin.png", dpi=600)
     return 0
 
 
