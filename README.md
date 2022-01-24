@@ -33,15 +33,11 @@ Clutter identification, removal and data interpolation (algorithm by Gabella et 
 <img src="images/radar_dx_drs_1901091200_noclutter.png" alt="radar_dx_drs_1901091200_noclutter" width="400"/>
 
 ### 3. Correct attenuation
-Calculate integrated attenuation for each bin (Kraemer et al. 2008, Jacobi et al. 2016).   
+Calculate integrated attenuation for each bin (Kraemer et al. 2008, Jacobi et al. 2016).  
 <img src="images/radar_dx_drs_1901091200_att.png" alt="radar_dx_drs_1901091200_att" width="400"/>
 <img src="images/radar_dx_drs_1901091200_attcorr.png" alt="radar_dx_drs_1901091200_attcorr" width="400"/>
-
-#### Averaged attenuation:   
-<img src="images/radar_dx_drs_1901091200_attcorr_meanbin.png" alt="radar_dx_drs_1901091200_attcorr_meanbin" width="400"/>
-
-#### Individual attenuation for single azimuth angles (examples):   
-<img src="images/radar_dx_drs_1901091200_attcorr_bin90.png" alt="radar_dx_drs_1901091200_attcorr_bin90" width="400"/> <img src="images/radar_dx_drs_1901091200_attcorr_bin270.png" alt="radar_dx_drs_1901091200_attcorr_bin270" width="400"/>
+#### Averaged attenuation (left), individual attenuation for single azimuth angle (right, example)   
+<img src="images/radar_dx_drs_1901091200_attcorr_meanbin.png" alt="radar_dx_drs_1901091200_attcorr_meanbin" width="400"/><img src="images/radar_dx_drs_1901091200_attcorr_bin270.png" alt="radar_dx_drs_1901091200_attcorr_bin270" width="400"/>
 
 ### 4. Derive rain depths
 Apply Z-R-Relation (coefficients a=200 and b=1.6) and integrate rain rates for 60 min.   
@@ -62,4 +58,4 @@ Data source:
 <img src="images/adjustment_mul.png" alt="adjustment_mul" width="400"/> <img src="images/adjustment_mixed.png" alt="adjustment_mixed" width="400"/>
 
 ### 8. Evaluate adjustment methods
-<img src="images/adjustment_eval2.png" alt="adjustment_eval2" width="700"/>
+<img src="images/adjustment_eval.png" alt="adjustment_eval" width="700"/>
