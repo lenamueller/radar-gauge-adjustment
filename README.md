@@ -23,7 +23,7 @@ wradlib 1.13.0
 pint_xarray
 
 ## Workflow (test case 09.01.2019 12:00 UTC)
-### 1. Read DX-data 
+### 1. Read DX-data (Radar)
 Data source: https://opendata.dwd.de/weather/radar/sites/dx/   
 <img src="images/radar_dx_drs_1901091200_raw.png" alt="radar_dx_drs_1901091200_raw" width="400"/>
 
@@ -43,8 +43,8 @@ Calculate integrated attenuation for each bin (Kraemer et al. 2008, Jacobi et al
 #### Individual attenuation for single azimuth angles (examples):   
 <img src="images/radar_dx_drs_1901091200_attcorr_bin90.png" alt="radar_dx_drs_1901091200_attcorr_bin90" width="400"/> <img src="images/radar_dx_drs_1901091200_attcorr_bin270.png" alt="radar_dx_drs_1901091200_attcorr_bin270" width="400"/>
 
-### 4. Calculate rain depths
-Apply ZR-Relation with coefficients a=200 and b=1.6. Integrate rain rates for 60min.   
+### 4. Derive rain depths
+Apply Z-R-Relation (coefficients a=200 and b=1.6) and integrate rain rates for 60 min.   
 <img src="images/radar_dx_drs_1901091200_raindepths.png" alt="radar_dx_drs_1901091200_raindepths" width="400"/>
 
 ### 5. Create composite and georeference
@@ -52,14 +52,14 @@ Contains 60min rain accumulation for radar sites Dresden (drs), Ummendorf (umd),
 Requires step 1. to 4. for each radar site.   
 <img src="images/composite_1901091200_utm60min.png" alt="composite_1901091200_utm60min" width="500"/>
 
-### 6. Read gauge-data 
+### 6. Read RR-data (gauges)
 Data source:  
 1h-data: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/   
 1min-data: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/1_minute/precipitation/
 
-### 7. Apply RADAR-gauge adjustment methods
+### 7. Apply adjustment methods
 <img src="images/adjustment_add.png" alt="adjustment_add" width="400"/> <img src="images/adjustment_mfb.png" alt="adjustment_mfb" width="400"/>
 <img src="images/adjustment_mul.png" alt="adjustment_mul" width="400"/> <img src="images/adjustment_mixed.png" alt="adjustment_mixed" width="400"/>
 
-### 8. Evaluation
-<img src="images/adjustment_eval.png" alt="adjustment_eval" width="500"/>
+### 8. Evaluate adjustment methods
+<img src="images/adjustment_eval2.png" alt="adjustment_eval2" width="700"/>
