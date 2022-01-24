@@ -27,22 +27,24 @@ pint_xarray
 ## Workflow (test case 09.01.2019 12:00 UTC)
 ### 1. Read DX-data (Radar)
 Data source: https://opendata.dwd.de/weather/radar/sites/dx/   
-<img src="images/radar_dx_drs_1901091200_raw.png" alt="radar_dx_drs_1901091200_raw" width="400"/>
+<img src="images/drs/radar_dx_drs_1901091200_raw.png" alt="radar_dx_drs_1901091200_raw" width="400"/>
 
 ### 2. Correct clutter
 Clutter identification, removal and data interpolation (algorithm by Gabella et al. 2002).
-<img src="images/radar_dx_drs_1901091200_cluttermap.png" alt="radar_dx_drs_1901091200_raw" width="400"/>
-<img src="images/radar_dx_drs_1901091200_noclutter.png" alt="radar_dx_drs_1901091200_noclutter" width="400"/>
+<img src="images/drs/radar_dx_drs_1901091200_cluttermap.png" alt="radar_dx_drs_1901091200_raw" width="400"/>
+<img src="images/drs/radar_dx_drs_1901091200_noclutter.png" alt="radar_dx_drs_1901091200_noclutter" width="400"/>
 
 ### 3. Correct attenuation
 Calculate integrated attenuation for each bin (Kraemer et al. 2008, Jacobi et al. 2016).   
 Upper left: attenuation error, upper right: radar image after attenuation correction, lower left: averaged attenuation by distance, lower right: individual attenuation for single azimuth angle (e.g. 270°)   
-<img src="images/radar_dx_drs_1901091200_att.png" alt="radar_dx_drs_1901091200_att" width="400"/><img src="images/radar_dx_drs_1901091200_attcorr.png" alt="radar_dx_drs_1901091200_attcorr" width="400"/>
-<img src="images/radar_dx_drs_1901091200_attcorr_meanbin.png" alt="radar_dx_drs_1901091200_attcorr_meanbin" width="400"/><img src="images/radar_dx_drs_1901091200_attcorr_bin270.png" alt="radar_dx_drs_1901091200_attcorr_bin270" width="400"/>
+<img src="images/drs/radar_dx_drs_1901091200_att.png" alt="radar_dx_drs_1901091200_att" width="400"/>
+<img src="images/drs/radar_dx_drs_1901091200_attcorr.png" alt="radar_dx_drs_1901091200_attcorr" width="400"/>
+<img src="images/drs/radar_dx_drs_1901091200_attcorr_meanbin.png" alt="radar_dx_drs_1901091200_attcorr_meanbin" width="400"/>
+<img src="images/drs/radar_dx_drs_1901091200_attcorr_bin270.png" alt="radar_dx_drs_1901091200_attcorr_bin270" width="400"/>
 
 ### 4. Derive rain depths
 Apply Z-R-Relation (coefficients a=200 and b=1.6) and integrate rain rates for 60 min.   
-<img src="images/radar_dx_drs_1901091200_raindepths.png" alt="radar_dx_drs_1901091200_raindepths" width="400"/>
+<img src="images/drs/radar_dx_drs_1901091200_raindepths.png" alt="radar_dx_drs_1901091200_raindepths" width="400"/>
 
 ### 5. Create composite and georeference
 Contains 60min rain accumulation for radar sites Dresden (drs), Ummendorf (umd), Neuhaus (neu), Eisberg (eis) and Prötzel (pro).   
