@@ -6,23 +6,8 @@ myenv/*
 code/__pycache__/*
 code/adjustment_example.py
 
+images/weather_maps
 images/radar_dx_umd*
 images/radar_dx_pro*
 images/radar_dx_neu*
 images/radar_dx_eis*
-
-images/CFSR_1_2019010912_1.png
-images/CFSR_1_2019010912_2.png
-images/CFSR_1_2019010912_4.png
-images/CFSR_1_2019010912_5.png
-images/DE_FX_2019010900.png
-images/DE_RH_2019010900.png
-images/DE_SN_2019010900.png
-images/DE_TG_2019010900.png
-images/DE_TN_2019010900.png
-images/DE_TX_2019010900.png
-images/NWS_1_2019010900_45.gif
-images/RAD_6_201901091200_415.png
-images/SAT_1_2019010912_44.jpg
-images/SAT_1_201901091200_404.jpg
-geodata/radar.txt
