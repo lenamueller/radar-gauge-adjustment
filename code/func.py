@@ -139,6 +139,7 @@ def plot_raindepths(depths, filename):
     # pl.savefig(f"images/radar_dx_{site_abb}_{filename[15:25]}_raindepths.png", dpi=600)
     return 0
 
+
 def max_from_arrays(array1, array2):
     """Choose element wise maximum. Keeps NaN's as NaN's if both are NaN."""
     if array1.shape == array2.shape:
@@ -152,17 +153,23 @@ def max_from_arrays(array1, array2):
         raise ValueError("Arrays' shape don't match.") 
     return newarray
 
-# def rmse(target, predict):
-#     l = []
-#     for i in range(len(target)):
-#         l.append(math.pow((target[i] - predict[i]),2))
-#     return math.sqrt(np.mean(l))
+# def blending_radar_domains(domain, gridded_data):
+#     """Choose element wise maximum. Keeps NaN's as NaN's if both are NaN."""
+#     return max_from_arrays(domain, gridded_data)
 
-def frequency(feature_list, bin_number, bin_width):  
-    """ binning function. bin_number includes one for zero and one for infinity """
-    frequency_list = [0] * bin_number
-    for i in feature_list:
-        index = math.ceil(i/bin_width)
-        index = min(index, len(frequency_list)-1)
-        frequency_list[index]+=1
-    return frequency_list
+def plot_grid(data, xgrid, ygrid, plottitle, filename):
+    """ Plot gridded data."""
+    fig = pl.figure(figsize=(10, 8))
+    ax = pl.subplot(111, aspect="equal")
+    pm = ax.pcolormesh(xgrid, ygrid, data, cmap=cm, vmin=0, vmax=4.5)
+    cbar = pl.colorbar(pm)
+    cm.set_bad(color='gray')
+    cbar.set_label("60 min - rain depths (mm)", fontsize=12)
+    pl.xlabel("Easting (m)", fontsize=12)
+    pl.ylabel("Northing (m)", fontsize=12)
+    ax.ticklabel_format(useOffset=False, style='plain')
+    pl.xlim(50000, 600000)
+    pl.ylim(min(ygrid), 6000000)
+    pl.grid(lw=0.5)
+    pl.title(plottitle, fontsize=12)
+    pl.savefig("images/"+filename, dpi=600)
