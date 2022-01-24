@@ -18,9 +18,7 @@ python code/PlotCorrection.py "raa00-dx_10557-1901091200-neu---bin" 3600
 python code/PlotCorrection.py "raa00-dx_10780-1901091200-eis---bin" 3600
 
 # Plot composite, adjustment methods and evaluation.
-
-
-
+python code/PlotComposite.py "3600"
 
 # deactivate virtual env.
 deactivate

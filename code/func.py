@@ -133,14 +133,13 @@ def max_from_arrays(array1, array2):
     return newarray
 
 
-def plot_grid(data, xgrid, ygrid, plottitle, filename):
+def plot_grid(data, xgrid, ygrid, plottitle, filename, minutes=60):
     """ Plot gridded data."""
     pl.figure(figsize=(10, 8))
     ax = pl.subplot(111, aspect="equal")
     pm = ax.pcolormesh(xgrid, ygrid, data, cmap=cm, vmin=0, vmax=4.5)
     cbar = pl.colorbar(pm)
     cm.set_bad(color='gray')
-    cbar.set_label("60 min - rain depths (mm)", fontsize=14)
     cbar.ax.tick_params(labelsize=14) 
     pl.xlabel("Easting (m)", fontsize=14)
     pl.ylabel("Northing (m)", fontsize=14)
@@ -150,4 +149,11 @@ def plot_grid(data, xgrid, ygrid, plottitle, filename):
     pl.ylim(min(ygrid), 6000000)
     pl.grid(lw=0.5)
     pl.title(plottitle, fontsize=14)
-    pl.savefig("images/"+filename, dpi=600)
+    if minutes == 5:
+        cbar.set_label("5 min - rain depths (mm)", fontsize=14)
+        pl.savefig(f"images/"+filename+"5min", dpi=600)
+    if minutes == 60:
+        cbar.set_label("60 min - rain depths (mm)", fontsize=14)
+        pl.savefig(f"images/"+filename+"60min", dpi=600)
+    else:
+        raise NameError("No cbar label for chosen time interval.")
