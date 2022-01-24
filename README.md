@@ -6,8 +6,9 @@
 ## radar-gauge-adjustment
 Shell script for scraping data from DWD's open data server and applying an adjustment for radar rainfall rates with gauge data. 
 
-Run example case with ```source run_sample.sh```.   
-Run latest radar images with ```source run.sh``` (todo).
+Create virtual environment with all required modules with  ```./create_venv..sh```.    
+Run example case with ```./run_sample.sh```.   
+Run latest radar images with ```./source run.sh``` (todo).
 
 
 ## Packages and Dependencies
@@ -18,6 +19,7 @@ matplotlib 3.5.1
 netCDF4 1.5.8
 numpy 1.22.0
 pandas 1.3.5
+scikit-learn 1.0.2
 scipy 1.7.3
 wradlib 1.13.0
 pint_xarray
@@ -33,10 +35,9 @@ Clutter identification, removal and data interpolation (algorithm by Gabella et 
 <img src="images/radar_dx_drs_1901091200_noclutter.png" alt="radar_dx_drs_1901091200_noclutter" width="400"/>
 
 ### 3. Correct attenuation
-Calculate integrated attenuation for each bin (Kraemer et al. 2008, Jacobi et al. 2016).  
-<img src="images/radar_dx_drs_1901091200_att.png" alt="radar_dx_drs_1901091200_att" width="400"/>
-<img src="images/radar_dx_drs_1901091200_attcorr.png" alt="radar_dx_drs_1901091200_attcorr" width="400"/>
-#### Averaged attenuation (left), individual attenuation for single azimuth angle (right, example)   
+Calculate integrated attenuation for each bin (Kraemer et al. 2008, Jacobi et al. 2016).   
+Upper left: attenuation error, upper right: radar image after attenuation correction, lower left: averaged attenuation by distance, lower right: individual attenuation for single azimuth angle (e.g. 270°)   
+<img src="images/radar_dx_drs_1901091200_att.png" alt="radar_dx_drs_1901091200_att" width="400"/><img src="images/radar_dx_drs_1901091200_attcorr.png" alt="radar_dx_drs_1901091200_attcorr" width="400"/>
 <img src="images/radar_dx_drs_1901091200_attcorr_meanbin.png" alt="radar_dx_drs_1901091200_attcorr_meanbin" width="400"/><img src="images/radar_dx_drs_1901091200_attcorr_bin270.png" alt="radar_dx_drs_1901091200_attcorr_bin270" width="400"/>
 
 ### 4. Derive rain depths
