@@ -6,9 +6,10 @@ from pyproj import Proj
 import wradlib as wrl
 import matplotlib.pylab as pl
 import matplotlib.pyplot as plt
+from sklearn.metrics import mean_squared_error
 
-from func import max_from_arrays, plot_grid, plot_polar, cm, cm_binary
-from func import clutter_gabella, attcorr, plot_attenuation_mean_bin, plot_attenuation_per_bin, rain_depths, plot_raindepths
+from func import max_from_arrays, plot_grid, plot_polar, cm_binary
+from func import clutter_gabella, attcorr,  rain_depths
 
 
 # Define filenames.
@@ -45,21 +46,13 @@ def polar_to_utm(filename, radar_location_latlon, duration_sec=300*12):
     # Read and plot raw data.
     f = wrl.util.get_wradlib_data_file('example_data/'+filename)
     data, metadata = wrl.io.read_dx(f)
-    # plot_polar(data, filename, "Raw data", "raw")
     # Clutter correction
     clmap, data_no_clutter = clutter_gabella(data, filename)
-    # plot_polar(data=clmap, filename=filename, what="cluttermap", subtitle="Detected clutter", cm=cm_binary, plot_cbar=False)
-    # plot_polar(data=data_no_clutter, filename=filename, what="noclutter", subtitle="After clutter correction")    
     # Attenuation correction
     att, data_attcorr = attcorr(data_no_clutter, filename)
-    # plot_polar(data=att, filename=filename, subtitle="Attenuation error", what="att", cm="Reds", cbarlabel="$\Delta$ Reflectivity (dBZ)")
-    # plot_polar(data=data_attcorr, filename=filename, subtitle="After attenuation correction", what="attcorr")
-    # plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, 90)
-    # plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, 270)
-    # plot_attenuation_mean_bin(data_no_clutter, data_attcorr, filename)
     # Get rain depths.
     depths = rain_depths(data_attcorr, filename, duration_sec=duration_sec)
-    # plot_raindepths(depths, filename)
+
     # Project into xyz-coords.
     coords, rad = wrl.georef.spherical_to_xyz(polargrid[0], polargrid[1], elevation, radar_location_latlon)
     # Reproject into EPSG 32633.
@@ -205,16 +198,26 @@ plot_grid(mixadjusted_arr - radar, xgrid, ygrid,"Additive-multiplicative-mixed e
 
 # Cumulative distribution function of radar, gauges and adjustment methods.
 fig = pl.figure(figsize=(10, 6))
-n_radar = plt.hist(np.round(radar_1d, decimals=1), 200, density=True, histtype="step", cumulative=True, label="raw radar", log=False, linewidth=1.5)
-n_gauges = plt.hist(obs_1d, 200, density=True, histtype="step", cumulative=True, label="gauges", log=False, linewidth=1.5)
-n_add = plt.hist(np.round(addadjusted, decimals=1), 200, density=True, histtype="step", cumulative=True, label="add (var)", log=False, linewidth=1.5)
-n_mul = plt.hist(np.round(multadjusted, decimals=1), 200, density=True, histtype="step", cumulative=True, label="mul (var)", log=False, linewidth=1.5)
-n_mulconst = plt.hist(np.round(mfbadjusted, decimals=1), 200, density=True, histtype="step", cumulative=True, label="mul (const)", log=False, linewidth=1.5)
-n_mix = plt.hist(np.round(mixadjusted, decimals=1), 200, density=True, histtype="step", cumulative=True, label="add-mul-mix (var)", log=False, linewidth=1.5)
+# n_radar = plt.hist(np.round(radar_1d, decimals=1), 100, density=True, histtype="step", cumulative=True, label="raw radar", log=False, linewidth=1.5)
+# n_gauges = plt.hist(obs_1d, 100, density=True, histtype="step", cumulative=True, label="gauges", log=False, linewidth=1.5)
+# n_add = plt.hist(np.round(addadjusted, decimals=1), 100, density=True, histtype="step", cumulative=True, label="add (var)", log=False, linewidth=1.5)
+# n_mul = plt.hist(np.round(multadjusted, decimals=1), 100, density=True, histtype="step", cumulative=True, label="mul (var)", log=False, linewidth=1.5)
+# n_mulconst = plt.hist(np.round(mfbadjusted, decimals=1), 100, density=True, histtype="step", cumulative=True, label="mul (const)", log=False, linewidth=1.5)
+# n_mix = plt.hist(np.round(mixadjusted, decimals=1), 100, density=True, histtype="step", cumulative=True, label="mix (var)", log=False, linewidth=1.5)
+n_radar = plt.hist(radar_1d, 100, density=True, histtype="step", cumulative=False, label="raw radar", log=False, linewidth=1.5)
+n_gauges = plt.hist(obs_1d, 100, density=True, histtype="step", cumulative=False, label="gauges", log=False, linewidth=1.5)
+n_add = plt.hist(addadjusted, 100, density=True, histtype="step", cumulative=False, label="add (var)", log=False, linewidth=1.5)
+n_mul = plt.hist(multadjusted, 100, density=True, histtype="step", cumulative=False, label="mul (var)", log=False, linewidth=1.5)
+n_mulconst = plt.hist(mfbadjusted, 100, density=True, histtype="step", cumulative=False, label="mul (const)", log=False, linewidth=1.5)
+n_mix = plt.hist(np.round(mixadjusted, decimals=1), 100, density=True, histtype="step", cumulative=False, label="mix (var)", log=False, linewidth=1.5)
 plt.legend(loc="lower right")
 plt.grid()
-plt.xlim([0,2])
-plt.ylim([0.4,1])
+# plt.xlim([0,4.5])
+# plt.ylim([0.4,1])
 plt.xlabel("Precipitation [mm]", fontsize=12)
 plt.ylabel("CDF", fontsize=12)
 plt.savefig("images/adjustment_eval", dpi=600)
+
+# Calculate RMSE.
+for x in [n_radar, n_add, n_mul, n_mulconst, n_mix]:
+    print(mean_squared_error(n_gauges[0], x[0], squared=True))

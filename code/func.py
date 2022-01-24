@@ -37,7 +37,7 @@ def plot_polar(data, filename, subtitle, what, cm="viridis", cbarlabel = "Reflec
     pl.xlim([-135, 135])
     pl.ylim([-135, 135])
     pl.title(f'{dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\n{subtitle}', fontsize=11)
-    # pl.savefig(f"images/radar_dx_{site_abb}_{filename[15:25]}_{what}.png", dpi=600)
+    pl.savefig(f"images/{site_abb}/radar_dx_{site_abb}_{filename[15:25]}_{what}.png", dpi=600)
     return 0
 
 
@@ -73,7 +73,7 @@ def plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, bin):
     pl.legend(fontsize=14)
     site_abb, site_text, dt = metadata(filename)
     pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\nAC - azimuth angle {bin} degree', fontsize=14)
-    # pl.savefig(f"images/radar_dx_{site_abb}_{filename[15:25]}_attcorr_bin{bin}.png", dpi=600)
+    pl.savefig(f"images/{site_abb}/radar_dx_{site_abb}_{filename[15:25]}_attcorr_bin{bin}.png", dpi=600)
     return 0
 
 
@@ -87,7 +87,7 @@ def plot_attenuation_mean_bin(data_no_clutter, data_attcorr, filename):
     pl.legend(fontsize=14)
     site_abb, site_text, dt = metadata(filename)
     pl.title(f'Reflectivity at {dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\nAC (averaged)', fontsize=14)
-    # pl.savefig(f"images/radar_dx_{site_abb}_{filename[15:25]}_attcorr_meanbin.png", dpi=600)
+    pl.savefig(f"images/{site_abb}/(radar_dx_{site_abb}_{filename[15:25]}_attcorr_meanbin.png", dpi=600)
     return 0
 
 
@@ -104,18 +104,18 @@ def rain_depths(data, filename, duration_sec):
 
 def plot_raindepths(depths, filename):
     """Plot rain depths in polar coordinates."""
-    pl.figure(figsize=(10, 8))
+    pl.figure(figsize=(10, 9))
     ax, im = wrl.vis.plot_ppi(depths, cmap=cm)
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
     cbar = pl.colorbar(im, shrink=0.75)
-    cbar.set_label("60 min - rain depths (mm)", fontsize=14)
-    cbar.ax.tick_params(labelsize=14) 
+    cbar.set_label("60 min - rain depths (mm)", fontsize=11)
+    cbar.ax.tick_params(labelsize=11) 
     pl.xlim([-135, 135])
     pl.ylim([-135, 135])
-    ax.tick_params(axis='both', which='major', labelsize=14)
+    ax.tick_params(axis='both', which='major', labelsize=11)
     site_abb, site_text, dt = metadata(filename)
-    pl.title(f'{dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\nAfter applying Z-R-relation', fontsize=14)
-    # pl.savefig(f"images/radar_dx_{site_abb}_{filename[15:25]}_raindepths.png", dpi=600)
+    pl.title(f'{dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\nAfter applying Z-R-relation', fontsize=11)
+    pl.savefig(f"images/{site_abb}/radar_dx_{site_abb}_{filename[15:25]}_raindepths.png", dpi=600)
     return 0
 
 
