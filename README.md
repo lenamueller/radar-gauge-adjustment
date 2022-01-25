@@ -47,9 +47,9 @@ Apply Z-R-Relation (coefficients a=200 and b=1.6) and integrate rain rates for 6
 <img src="images/drs/radar_dx_drs_1901091200_raindepths.png" alt="radar_dx_drs_1901091200_raindepths" width="400"/>
 
 ### 5. Create composite and georeference
-Contains 60min rain accumulation for radar sites Dresden (drs), Ummendorf (umd), Neuhaus (neu), Eisberg (eis) and Prötzel (pro).   
 Requires step 1. to 4. for each radar site.   
-<img src="images/composite_1901091200_utm60min.png" alt="composite_1901091200_utm60min" width="500"/>
+Contains 60min rain accumulation for radar sites Dresden (drs), Ummendorf (umd), Neuhaus (neu), Eisberg (eis) and Prötzel (pro).   
+<img src="images/composite_1901091200_utm60min.png" alt="composite_1901091200_utm60min" width="400"/>
 
 ### 6. Read RR-data (gauges)
 Data source:  
@@ -57,8 +57,12 @@ Data source:
 1min-data: https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/1_minute/precipitation/
 
 ### 7. Apply adjustment methods
-<img src="images/adjustment_add.png" alt="adjustment_add" width="400"/> <img src="images/adjustment_mfb.png" alt="adjustment_mfb" width="400"/>
-<img src="images/adjustment_mul.png" alt="adjustment_mul" width="400"/> <img src="images/adjustment_mixed.png" alt="adjustment_mixed" width="400"/>
+#### hourly adjustment
+<img src="images/adjustment_add60min.png" alt="adjustment_add60min" width="400"/> <img src="images/adjustment_mfb60min.png" alt="adjustment_mfb60min" width="400"/>
+<img src="images/adjustment_mul60min.png" alt="adjustment_mul60min" width="400"/> <img src="images/adjustment_mixed60min.png" alt="adjustment_mixed60min" width="400"/>
+
+#### 5min adjustment
+todo
 
 ### 8. Evaluate adjustment methods
-<img src="images/adjustment_eval.png" alt="adjustment_eval" width="700"/>
+todo
