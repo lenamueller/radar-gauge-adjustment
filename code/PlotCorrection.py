@@ -7,8 +7,8 @@ from func import clutter_gabella, attcorr, plot_attenuation_mean_bin, plot_atten
 
 # Retrieve arguments from shell script.
 filename = sys.argv[1]
-duration_sec = sys.argv[2]
-duration_sec = int(duration_sec)
+minutes = int(sys.argv[2])
+print(filename, " - Clutter and attenuation correction. Calculate rain depths.")
 
 # Read and plot raw data.
 f = wrl.util.get_wradlib_data_file('example_data/'+filename)
@@ -31,5 +31,5 @@ plot_attenuation_per_bin(data_no_clutter, data_attcorr, filename, 270)
 plot_attenuation_mean_bin(data_no_clutter, data_attcorr, filename)
 
 # Get rain depths.
-depths = rain_depths(data_attcorr, filename, duration_sec=duration_sec)
-plot_raindepths(depths, filename)
+depths = rain_depths(data_attcorr, filename, minutes)
+plot_raindepths(depths, filename, minutes)

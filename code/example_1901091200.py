@@ -38,7 +38,7 @@ ygrid = np.linspace(5350000, 6050000, 700)
 grid_xy = np.meshgrid(xgrid, ygrid)
 grid_xy = np.vstack((grid_xy[0].ravel(), grid_xy[1].ravel())).transpose()
 
-def polar_to_utm(filename, radar_location_latlon, duration_sec=300*12):
+def polar_to_utm(filename, radar_location_latlon, minutes=300*12):
     """
     Read radar data and apply clutter and attenuation correction. Derive precipitation depths by applying ZR-Relation and integrate to rain depths.
     Convert polar coordinates in xyz cartesian coordinates. Reproject the cartesian coordinates into UTM Zone 33N and grid data.
@@ -47,7 +47,7 @@ def polar_to_utm(filename, radar_location_latlon, duration_sec=300*12):
     data, metadata = wrl.io.read_dx(f)
     clmap, data_no_clutter = clutter_gabella(data, filename) # Clutter correction
     att, data_attcorr = attcorr(data_no_clutter, filename) # Attenuation correction
-    depths = rain_depths(data_attcorr, filename, duration_sec=duration_sec) # ZR-Relation
+    depths = rain_depths(data_attcorr, filename, minutes) # ZR-Relation
 
     # Project into xyz-coords.
     coords, rad = wrl.georef.spherical_to_xyz(polargrid[0], polargrid[1], elevation, radar_location_latlon)
@@ -60,11 +60,11 @@ def polar_to_utm(filename, radar_location_latlon, duration_sec=300*12):
     gridded = gridded.reshape((len(xgrid), len(ygrid)))
     return gridded
 
-gridded_drs = polar_to_utm(filename_drs, radar_location_drs, duration_sec=300*12)
-gridded_eis = polar_to_utm(filename_eis, radar_location_eis, duration_sec=300*12)
-gridded_umd = polar_to_utm(filename_umd, radar_location_umd, duration_sec=300*12)
-gridded_pro = polar_to_utm(filename_pro, radar_location_pro, duration_sec=300*12)
-gridded_neu = polar_to_utm(filename_neu, radar_location_neu, duration_sec=300*12)
+gridded_drs = polar_to_utm(filename_drs, radar_location_drs, minutes)
+gridded_eis = polar_to_utm(filename_eis, radar_location_eis, minutes)
+gridded_umd = polar_to_utm(filename_umd, radar_location_umd, minutes)
+gridded_pro = polar_to_utm(filename_pro, radar_location_pro, minutes)
+gridded_neu = polar_to_utm(filename_neu, radar_location_neu, minutes)
 
 # Fix wrong pixels in umd-radar domain.
 for row in range(700):

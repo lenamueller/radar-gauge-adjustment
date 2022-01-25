@@ -91,31 +91,30 @@ def plot_attenuation_mean_bin(data_no_clutter, data_attcorr, filename):
     return 0
 
 
-def rain_depths(data, filename, duration_sec):
+def rain_depths(data, filename, minutes):
     """ 
     Apply ZR-relation (a=200, b=1.6) to get precipitation rates.
     Integrate rainfall rates to rainfall depth.
     """
     R = wrl.zr.z_to_r(wrl.trafo.idecibel(data))
-    depths = wrl.trafo.r_to_depth(R, duration_sec)
-    plot_raindepths(depths, filename)
+    depths = wrl.trafo.r_to_depth(R, minutes*60)
     return depths
 
 
-def plot_raindepths(depths, filename):
+def plot_raindepths(depths, filename, minutes):
     """Plot rain depths in polar coordinates."""
     pl.figure(figsize=(10, 9))
     ax, im = wrl.vis.plot_ppi(depths, cmap=cm)
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
     cbar = pl.colorbar(im, shrink=0.75)
-    cbar.set_label("60 min - rain depths (mm)", fontsize=11)
+    cbar.set_label(f"{minutes} min - rain depths (mm)", fontsize=14)
     cbar.ax.tick_params(labelsize=11) 
     pl.xlim([-135, 135])
     pl.ylim([-135, 135])
     ax.tick_params(axis='both', which='major', labelsize=11)
     site_abb, site_text, dt = metadata(filename)
     pl.title(f'{dt.strftime("%d-%m-%Y %H:%M")} UTC\n{site_text}\nAfter applying Z-R-relation', fontsize=11)
-    pl.savefig(f"images/{site_abb}/radar_dx_{site_abb}_{filename[15:25]}_raindepths.png", dpi=600)
+    pl.savefig(f"images/{site_abb}/radar_dx_{site_abb}_{filename[15:25]}_raindepths{minutes}min.png", dpi=600)
     return 0
 
 
@@ -133,14 +132,22 @@ def max_from_arrays(array1, array2):
     return newarray
 
 
-def plot_grid(data, xgrid, ygrid, plottitle, filename, minutes=60):
+def plot_grid(data, gaugedict, xgrid, ygrid, plottitle, filename, minutes, cmap=cm, plotgauges=False):
     """ Plot gridded data."""
     pl.figure(figsize=(10, 8))
     ax = pl.subplot(111, aspect="equal")
-    pm = ax.pcolormesh(xgrid, ygrid, data, cmap=cm, vmin=0, vmax=4.5)
+    # add radar data
+    if minutes == 5:
+        pm = ax.pcolormesh(xgrid, ygrid, data, cmap=cmap, vmin=0, vmax=0.35)
+    if minutes == 60:
+        pm = ax.pcolormesh(xgrid, ygrid, data, cmap=cmap, vmin=0, vmax=4.5)
     cbar = pl.colorbar(pm)
     cm.set_bad(color='gray')
     cbar.ax.tick_params(labelsize=14) 
+    cbar.set_label(f"{minutes} min - rain depths (mm)", fontsize=14)
+    # add gauge stations
+    if plotgauges == True:
+        pl.scatter(gaugedict['easting'], gaugedict["northing"],  marker='+', s=3, c="k", alpha=0.5)
     pl.xlabel("Easting (m)", fontsize=14)
     pl.ylabel("Northing (m)", fontsize=14)
     ax.ticklabel_format(useOffset=False, style='plain')
@@ -149,11 +156,4 @@ def plot_grid(data, xgrid, ygrid, plottitle, filename, minutes=60):
     pl.ylim(min(ygrid), 6000000)
     pl.grid(lw=0.5)
     pl.title(plottitle, fontsize=14)
-    if minutes == 5:
-        cbar.set_label("5 min - rain depths (mm)", fontsize=14)
-        pl.savefig(f"images/"+filename+"5min", dpi=600)
-    if minutes == 60:
-        cbar.set_label("60 min - rain depths (mm)", fontsize=14)
-        pl.savefig(f"images/"+filename+"60min", dpi=600)
-    else:
-        raise NameError("No cbar label for chosen time interval.")
+    pl.savefig(f"images/{filename}{minutes}min", dpi=600)

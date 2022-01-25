@@ -7,7 +7,10 @@ code/__pycache__/*
 code/adjustment_example.py
 
 images/weather_maps
+
 images/eis
 images/neu
 images/pro
 images/umd
+images/*diff*
+images/*ipol*
