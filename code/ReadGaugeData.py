@@ -8,12 +8,11 @@ import zipfile
 
 myProj = Proj("+proj=utm +zone=33 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 
-def read_gauges_1min(gaugelist, xgrid, ygrid, path_to_data):
+def read_gauges_1min(gaugelist, xgrid, ygrid, path_to_data, minutes):
     gaugedata = {"id": [], "prec_mm": []}
-    files = [_ for _ in os.listdir(path_to_data) if _.endswith(r".zip")]
-    # files = [f for f in os.listdir(path_to_data) if os.path.isfile(os.path.join(path_to_data, f))]
     
     # Unzip files of interest.
+    files = [_ for _ in os.listdir(path_to_data) if _.endswith(r".zip")]
     for file in files:
         date_start = datetime.datetime.strptime(file[27:35], '%Y%m%d')
         date_end = datetime.datetime.strptime(file[36:44], '%Y%m%d')
@@ -30,8 +29,12 @@ def read_gauges_1min(gaugelist, xgrid, ygrid, path_to_data):
             p_list = []
             for line in lines:
                 line_split = [x.strip() for x in line.split(';')]
-                if line_split[1] in ["201901091201","201901091202","201901091203","201901091204","201901091205"]:
-                    p_list.append(float(line_split[4]))
+                if minutes == 5:
+                    if line_split[1] in ["201901091201","201901091202","201901091203","201901091204","201901091205"]:
+                        p_list.append(float(line_split[4]))
+                if minutes == 60:
+                    if "2019010912" in line_split[1]:
+                        p_list.append(float(line_split[4]))
             gaugedata["id"].append(line_split[0].zfill(5))                        
             gaugedata["prec_mm"].append(np.round(sum(p_list),3))
 

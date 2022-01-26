@@ -3,9 +3,14 @@ import matplotlib.pylab as pl
 import wradlib as wrl
 import numpy as np
 import math
+import shapefile as shp  # Requires the pyshp package
+import matplotlib.pyplot as plt
+from pyproj import Proj
 
 from colorbars import cm, cm_binary
 
+
+myProj = Proj("+proj=utm +zone=33 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 
 def metadata(filename):
     """ Return radar site abbreviation, radar site description and datetime object."""
@@ -134,6 +139,8 @@ def max_from_arrays(array1, array2):
 
 def plot_grid(data, gaugedict, xgrid, ygrid, plottitle, filename, minutes, cmap=cm, plotgauges=False):
     """ Plot gridded data."""
+    # replace negative numbers with zero.
+    data[data<0] = 0
     pl.figure(figsize=(10, 8))
     ax = pl.subplot(111, aspect="equal")
     # add radar data
@@ -148,12 +155,31 @@ def plot_grid(data, gaugedict, xgrid, ygrid, plottitle, filename, minutes, cmap=
     # add gauge stations
     if plotgauges == True:
         pl.scatter(gaugedict['easting'], gaugedict["northing"],  marker='+', s=3, c="k", alpha=0.5)
+    # add country shp
+    sf = shp.Reader("geodata/DEU_adm1_multiline.shp")
+    lines_seperated = []
+    for shape in sf.shapes():
+        all_parts = shape.parts
+        all_parts.append(len(shape.points[:]))
+        for i in range(len(shape.parts)-1):
+            line_begin = all_parts[i]
+            line_end = all_parts[i+1]-1
+            lines_seperated.append(shape.points[line_begin:line_end])
+            x = [i[0] for i in shape.points[line_begin:line_end]]
+            y = [i[1] for i in shape.points[line_begin:line_end]]
+            # reproject into UTM
+            east, north = [], []
+            for j in range(len(x)):
+                e, n = myProj(x[j], y[j])
+                east.append(e)
+                north.append(n)
+            plt.plot(east, north, lw=0.5, c="k")
     pl.xlabel("Easting (m)", fontsize=14)
     pl.ylabel("Northing (m)", fontsize=14)
     ax.ticklabel_format(useOffset=False, style='plain')
     ax.tick_params(axis='both', which='major', labelsize=14)
     pl.xlim(50000, 600000)
     pl.ylim(min(ygrid), 6000000)
-    pl.grid(lw=0.5)
+    pl.grid(lw=0.5, zorder=10)
     pl.title(plottitle, fontsize=14)
     pl.savefig(f"images/{filename}{minutes}min", dpi=600)
