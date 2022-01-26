@@ -1,4 +1,4 @@
-import shapefile as shp  # Requires the pyshp package
+import shapefile as shp
 import matplotlib.pyplot as plt
 from pyproj import Proj
 

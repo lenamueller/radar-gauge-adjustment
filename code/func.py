@@ -101,7 +101,7 @@ def rain_depths(data, filename, minutes):
     Apply ZR-relation (a=200, b=1.6) to get precipitation rates.
     Integrate rainfall rates to rainfall depth.
     """
-    R = wrl.zr.z_to_r(wrl.trafo.idecibel(data))
+    R = wrl.zr.z_to_r(wrl.trafo.idecibel(data), a=200, b=1.6)
     depths = wrl.trafo.r_to_depth(R, minutes*60)
     return depths
 
@@ -109,7 +109,7 @@ def rain_depths(data, filename, minutes):
 def plot_raindepths(depths, filename, minutes):
     """Plot rain depths in polar coordinates."""
     pl.figure(figsize=(10, 9))
-    ax, im = wrl.vis.plot_ppi(depths, cmap=cm)
+    ax, im = wrl.vis.plot_ppi(depths, cmap=cm, vmin=0)
     ax = wrl.vis.plot_ppi_crosshair((0,0,0), ranges=[20,40,60,80,100,120,128])
     cbar = pl.colorbar(im, shrink=0.75)
     cbar.set_label(f"{minutes} min - rain depths (mm)", fontsize=14)
