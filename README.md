@@ -70,7 +70,7 @@ zope.interface     5.4.0
 
 ## Overview
 ### Plot latest radar image of Germany
-<img src="images/latest/RAD_composite_2022-01-27-1625.png" alt="RAD_composite_2022-01-27-1625" width="600"/>   
+<img src="images/latest/RAD_composite_2022-01-27-1820.png" alt="RAD_composite_2022-01-27-1820" width="600"/>   
 
 ### Workflow (example case 09.01.2019 12:00 UTC, Eastern Germany)
 #### 1. Read DX-data (Radar)
