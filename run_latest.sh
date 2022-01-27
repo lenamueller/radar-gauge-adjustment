@@ -7,7 +7,7 @@ set -e
 source myenv/bin/activate
 
 # Download data from DWD`s open data server.
-wget -q -A "*latest*" -r -np --level=2 https://opendata.dwd.de/weather/radar/sites/dx/
+wget -A "*latest*" -r -np --level=2 https://opendata.dwd.de/weather/radar/sites/dx/
 # wget -r --level=1 https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/1_minute/precipitation/now/
 
 # set data path for wradlib

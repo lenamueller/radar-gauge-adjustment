@@ -1,15 +1,14 @@
 import sys
 import datetime
 import shapefile as shp
-from time import strftime
 import numpy as np
 import wradlib as wrl
 import matplotlib.pylab as pl
 import matplotlib.pyplot as plt
 from pyproj import Proj
 
-from colorbars import cm_binary, cm
-from func import plot_polar, clutter_gabella, attcorr, plot_attenuation_mean_bin, plot_attenuation_per_bin, rain_depths, plot_raindepths, max_from_arrays
+from colorbars import cm240
+from func import max_from_arrays
 
 
 # Retrieve arguments.
@@ -33,7 +32,7 @@ polargrid = np.meshgrid(ranges, azimuths)
 
 # Create xy grid.
 xgrid = np.linspace(100000, 1000000, 1000)
-ygrid = np.linspace(5100000, 6200000, 1000)
+ygrid = np.linspace(5200000, 6200000, 1000)
 grid_xy = np.meshgrid(xgrid, ygrid)
 grid_xy = np.vstack((grid_xy[0].ravel(), grid_xy[1].ravel())).transpose()
 
@@ -41,7 +40,7 @@ grid_xy = np.vstack((grid_xy[0].ravel(), grid_xy[1].ravel())).transpose()
 f = wrl.util.get_wradlib_data_file(f"weather/radar/sites/dx/drs/raa00-dx_10488-latest-drs---bin")
 data, metadata = wrl.io.read_dx(f)
 dt = metadata["datetime"]
-dt_str = dt.strftime("%Y-%m-%d %H:%M")
+dt_str = dt.strftime("%A, %Y-%m-%d %H:%M")
 
 def get_gridded_depths(abbr, wmonr):
     """Read data and apply clutter and attenuation correction."""
@@ -83,9 +82,10 @@ print("Plot composite.")
 # Plot composite.
 pl.figure(figsize=(10, 8))
 ax = pl.subplot(111, aspect="equal")
-pm = ax.pcolormesh(xgrid, ygrid, radar, cmap=cm, vmin=0, vmax=0.10)
-cbar = pl.colorbar(pm)
-cm.set_bad(color='gray')
+pm = ax.pcolormesh(xgrid, ygrid, radar, cmap=cm240, vmin=0.0, vmax=1.2)
+cbar = pl.colorbar(pm, ticks=[0,0.2,0.4,0.6,0.8,1.0,1.2])
+cbar.ax.set_yticklabels(["0", "0.2", "0.4", "0.6", "0.8", "1.0", "1.2 <"])
+# cm240.set_bad(color='gray')
 cbar.ax.tick_params(labelsize=14) 
 cbar.set_label(f"5 min - rain depths (mm)", fontsize=14)
 # add gauge stations
@@ -113,11 +113,14 @@ pl.xlabel("Easting (m)", fontsize=14)
 pl.ylabel("Northing (m)", fontsize=14)
 ax.ticklabel_format(useOffset=False, style='plain')
 ax.tick_params(axis='both', which='major', labelsize=14)
-pl.xlim(min(xgrid), max(xgrid))
-pl.ylim(min(ygrid), max(ygrid))
+pl.xlim(200000, max(xgrid))
+pl.ylim(5200000, 6150000)
+pl.xticks(ticks=np.arange(200000,1200000,200000))
+pl.yticks(ticks=np.arange(5200000,6200000,200000))
 pl.grid(lw=0.5, zorder=10)
-pl.title(f"Radar composite Germany at {dt_str} UTC", fontsize=14)
-pl.savefig(f"images/latest/composite", dpi=600)
+pl.title(f"Precipitation Radar\n{dt_str} UTC", fontsize=14)
+x = dt.strftime("%Y-%m-%d-%H%M")
+pl.savefig(f"images/latest/RAD_composite_{x}", dpi=600)
     
 sys.exit()
 
