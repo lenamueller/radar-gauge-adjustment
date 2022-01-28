@@ -1,16 +1,19 @@
-opendata.dwd.de/*
-geodata/koordinaten-radarverbund.pdf
-
+# General
 myenv/*
-
 code/__pycache__/*
-code/adjustment_example.py
 
+# Data
+opendata.dwd.de/climate_environment/*
+opendata.dwd.de/weather/*
+opendata.dwd.de/example_data/hourly_data
+
+# Images
 images/weather_maps
-
 images/eis
 images/neu
 images/pro
 images/umd
 images/*diff*
 images/*ipol*
+images/latest/RAD_composite_2022-01-28-0805.png
+images/latest/RAD_composite_2022-01-28-1015.png
