@@ -7,7 +7,7 @@ import matplotlib.pylab as pl
 import matplotlib.pyplot as plt
 from pyproj import Proj
 
-from colorbars import cm240
+from colorbars import cm_latest
 from func import max_from_arrays
 
 
@@ -82,10 +82,10 @@ print("Plot composite.")
 # Plot composite.
 pl.figure(figsize=(10, 8))
 ax = pl.subplot(111, aspect="equal")
-pm = ax.pcolormesh(xgrid, ygrid, radar, cmap=cm240, vmin=0.0, vmax=0.8)
+pm = ax.pcolormesh(xgrid, ygrid, radar, cmap=cm_latest, vmin=0.0, vmax=0.8)
 cbar = pl.colorbar(pm, ticks=[0,0.1,0.2,0.3,0.4,0.5,0.6, 0.7, 0.8])
 cbar.ax.set_yticklabels(["0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8 <"])
-# cm240.set_bad(color='gray')
+# cm_latest.set_bad(color='gray')
 cbar.ax.tick_params(labelsize=14) 
 cbar.set_label(f"5 min - rain depths (mm)", fontsize=14)
 # add gauge stations
