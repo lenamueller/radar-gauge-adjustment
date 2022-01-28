@@ -119,4 +119,4 @@ Data source:
 Notice: The gray dots in the maps represent gauge stations. Due to the lack of gauge station data outside of Germany the interpolation there produces artifacts and don't allow a proper interpretation of the rain field there is tricky.
 
 #### 8. Evaluate adjustment methods
-todo
+<img src="images/adjustment_eval.png" alt="adjustment_eval" width="700"/>
