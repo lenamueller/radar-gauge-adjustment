@@ -96,9 +96,11 @@ if minutes == 5:
 
 gauge_array, gauge_array_ipol, gauge_stations = gaugearray(gaugedata, xgrid, ygrid)
 
+
 # Plot composite.
 plot_grid(radar, gaugedata, xgrid, ygrid, plottitle='09-01-2019 12:00 UTC\nDWD RADAR composite\nUTM zone 33N (EPSG 32633)', 
           filename=f"composite_{filename_drs[15:25]}_utm", minutes=minutes, plotgauges=False)
+
 
 # Prepare data for adjustment.
 radar_1d = radar.reshape([700*700])
@@ -127,6 +129,32 @@ adjusted_mix_arr = adjusted_mix.reshape(gridshape)
 # Correct bug in mixed adjustment.
 adjusted_mix_arr[413:457, 269:310] = np.nan_to_num(adjusted_mix_arr[413:457, 269:310])
 
+# Read shp boundary and replace 1 with NaN.
+boundary_mask = np. loadtxt("boundary.txt")
+for row in range(700):
+    for col in range(700):
+        if boundary_mask[row][col] == 1:
+            boundary_mask[row][col] = np.NaN
+
+plot_grid(boundary_mask, gaugedata, xgrid, ygrid, "Boundary mask", "boundarymask", 60)
+
 # Plot adjusted radar data.
 plot_adjusted_data(xgrid, ygrid, gaugedata, adjusted_add_arr, adjusted_mul_arr, adjusted_mulcon_arr, adjusted_mix_arr, minutes)
 plot_adjust_errors(xgrid, ygrid, gaugedata, radar, adjusted_add_arr, adjusted_mul_arr, adjusted_mulcon_arr, adjusted_mix_arr, minutes)
+
+# CDF
+fig = pl.figure(figsize=(10, 6))
+plt.hist(obs_1d, 100, density=True, histtype="step", cumulative=True, label="Bodenstationen", linewidth=1.5)
+plt.hist(np.add(radar, boundary_mask).reshape([700*700]), 100, density=True, histtype="step", cumulative=True, label="Radar-Rohdaten", linewidth=1.5)
+plt.hist(np.add(adjusted_add_arr, boundary_mask).reshape([700*700]), 100, density=True, histtype="step", cumulative=True, label="Add. (var)", linewidth=1.5)
+plt.hist(np.add(adjusted_mul_arr, boundary_mask).reshape([700*700]), 100, density=True, histtype="step", cumulative=True, label="Mul. (var)", linewidth=1.5)
+plt.hist(np.add(adjusted_mulcon_arr, boundary_mask).reshape([700*700]), 100, density=True, histtype="step", cumulative=True, label="Mul. (konst)", linewidth=1.5)
+plt.hist(np.add(adjusted_mix_arr, boundary_mask).reshape([700*700]), 100, density=True, histtype="step", cumulative=True, label="Add.-Mul. (var)", linewidth=1.5)
+plt.legend(loc="lower right")
+plt.grid()
+plt.xlim([0, 4.25])
+# plt.xlabel("5 min - precipitation [mm]", fontsize=12)
+plt.xlabel("5 min - Niederschlagssumme [mm]", fontsize=12)
+# plt.ylabel("CDF", fontsize=12)
+plt.ylabel("kumulierte, empirische Wahrscheinlichkeit", fontsize=12)
+plt.savefig("images/adjustment_eval", dpi=600)
