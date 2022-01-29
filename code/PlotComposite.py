@@ -6,12 +6,16 @@ import wradlib as wrl
 import matplotlib.pylab as pl
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
+from pyproj import Proj
+import shapefile as shp
 
 from ReadGaugeData import read_gauges_60min, read_gauges_1min, gaugearray
 from PlotAdjustment import plot_adjusted_data, plot_adjust_errors
 from func import max_from_arrays, plot_grid
 from func import clutter_gabella, attcorr,  rain_depths
+from colorbars import cm, cm_mask
 
+myProj = Proj("+proj=utm +zone=33 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 
 print("Composite and adjustment.")
 
@@ -142,6 +146,48 @@ plot_grid(boundary_mask, gaugedata, xgrid, ygrid, "Boundary mask", "boundarymask
 plot_adjusted_data(xgrid, ygrid, gaugedata, adjusted_add_arr, adjusted_mul_arr, adjusted_mulcon_arr, adjusted_mix_arr, minutes)
 plot_adjust_errors(xgrid, ygrid, gaugedata, radar, adjusted_add_arr, adjusted_mul_arr, adjusted_mulcon_arr, adjusted_mix_arr, minutes)
 
+adjusted_add_arr[adjusted_add_arr<0] = 0
+pl.figure(figsize=(10, 8))
+ax = pl.subplot(111, aspect="equal")
+# add radar data
+
+pm = ax.pcolormesh(xgrid, ygrid, np.add(adjusted_add_arr,boundary_mask), cmap=cm, vmin=0, vmax=4.5)
+cbar = pl.colorbar(pm)
+cm.set_bad(color='gray')
+cbar.ax.tick_params(labelsize=14) 
+cbar.set_label(f"{minutes} min - rain depths (mm)", fontsize=14)
+# add gauge stations
+pl.scatter(gaugedata['easting'], gaugedata["northing"],  marker='+', s=3, c="k", alpha=0.5)
+# add country shp
+sf = shp.Reader("geodata/DEU_adm1_multiline.shp")
+lines_seperated = []
+for shape in sf.shapes():
+    all_parts = shape.parts
+    all_parts.append(len(shape.points[:]))
+    for i in range(len(shape.parts)-1):
+        line_begin = all_parts[i]
+        line_end = all_parts[i+1]-1
+        lines_seperated.append(shape.points[line_begin:line_end])
+        x = [i[0] for i in shape.points[line_begin:line_end]]
+        y = [i[1] for i in shape.points[line_begin:line_end]]
+        # reproject into UTM
+        east, north = [], []
+        for j in range(len(x)):
+            e, n = myProj(x[j], y[j])
+            east.append(e)
+            north.append(n)
+        plt.plot(east, north, lw=0.5, c="k")
+pl.xlabel("Easting (m)", fontsize=14)
+pl.ylabel("Northing (m)", fontsize=14)
+ax.ticklabel_format(useOffset=False, style='plain')
+ax.tick_params(axis='both', which='major', labelsize=14)
+pl.xlim(50000, 600000)
+pl.ylim(min(ygrid), 6000000)
+pl.grid(lw=0.5, zorder=10)
+pl.title("Additive adjustment\n(spatially variable)", fontsize=14)
+pl.savefig(f"images/add_60min_new", dpi=600)
+    
+    
 # CDF
 fig = pl.figure(figsize=(10, 6))
 plt.hist(obs_1d, 100, density=True, histtype="step", cumulative=True, label="Bodenstationen", linewidth=1.5)
@@ -153,8 +199,8 @@ plt.hist(np.add(adjusted_mix_arr, boundary_mask).reshape([700*700]), 100, densit
 plt.legend(loc="lower right")
 plt.grid()
 plt.xlim([0, 4.25])
-# plt.xlabel("5 min - precipitation [mm]", fontsize=12)
-plt.xlabel("5 min - Niederschlagssumme [mm]", fontsize=12)
-# plt.ylabel("CDF", fontsize=12)
-plt.ylabel("kumulierte, empirische Wahrscheinlichkeit", fontsize=12)
+plt.xlabel("5 min - precipitation [mm]", fontsize=12)
+# plt.xlabel("5 min - Niederschlagssumme [mm]", fontsize=12)
+plt.ylabel("CDF", fontsize=12)
+# plt.ylabel("kumulierte, empirische Wahrscheinlichkeit", fontsize=12)
 plt.savefig("images/adjustment_eval", dpi=600)

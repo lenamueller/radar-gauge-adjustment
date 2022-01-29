@@ -5,8 +5,10 @@ cm = LinearSegmentedColormap.from_list("new_jet", [(1,1,1,0), (0,0.19,1), (0,0.6
 
 cm_binary = LinearSegmentedColormap.from_list("cm_binary", [(1,1,1,0), (1,0,0)], N=2) 
 
-cm_latest = LinearSegmentedColormap.from_list("cm_dwdradar", ["white", "blue","blue","blue","blue","blue","blue","blue","blue","blue",
-                                                          "royalblue","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue",                                                        
+cm_mask = LinearSegmentedColormap.from_list("cm_binary", [(1,1,1,0), (0,0,0,0.3)], N=2) 
+
+cm_latest = LinearSegmentedColormap.from_list("cm_dwdradar", ["white", "white","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue",
+                                                          "cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue",                                                        
                                                           "skyblue","skyblue","skyblue","skyblue","skyblue","skyblue","skyblue","skyblue","skyblue","skyblue",
                                                           "paleturquoise","paleturquoise","paleturquoise","paleturquoise","paleturquoise","paleturquoise","paleturquoise","paleturquoise","paleturquoise","paleturquoise",
                                                           "darkgreen","darkgreen","darkgreen","darkgreen","darkgreen","darkgreen","darkgreen","darkgreen","darkgreen","darkgreen",
