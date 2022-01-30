@@ -7,7 +7,7 @@ import shapefile as shp  # Requires the pyshp package
 import matplotlib.pyplot as plt
 from pyproj import Proj
 
-from colorbars import cm, cm_binary
+from colorbars import cm
 
 
 myProj = Proj("+proj=utm +zone=33 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
@@ -183,3 +183,7 @@ def plot_grid(data, gaugedict, xgrid, ygrid, plottitle, filename, minutes, cmap=
     pl.grid(lw=0.5, zorder=10)
     pl.title(plottitle, fontsize=14)
     pl.savefig(f"images/{filename}{minutes}min", dpi=600)
+    
+def rmse(actual, pred):     
+    """Calculate root mean squared error from two lists."""
+    return np.sqrt(np.square(np.subtract(actual, pred)).mean())

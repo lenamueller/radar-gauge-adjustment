@@ -127,4 +127,4 @@ def gaugearray(gaugedict, xgrid, ygrid, method="cubic"):
     gauge_array_ipol = sp.interpolate.griddata(points = gauge_indices, values = gaugedict["prec_mm"], xi = all_indices, method=method)
     gauge_array_ipol = gauge_array_ipol.reshape((700,700))
     
-    return gauge_array, gauge_array_ipol, gauge_stations
+    return gauge_array, gauge_indices, gauge_array_ipol, gauge_stations

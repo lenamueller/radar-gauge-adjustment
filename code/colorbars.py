@@ -1,13 +1,13 @@
 from matplotlib.colors import LinearSegmentedColormap
 
-
+# Used for rain depths plot.
 cm = LinearSegmentedColormap.from_list("new_jet", [(1,1,1,0), (0,0.19,1), (0,0.69,1), (0.44,1,0.56), (1,1,0), (1,0.69,0), (1,0,0), (0.5,0,0)], N=45) 
 
-cm_binary = LinearSegmentedColormap.from_list("cm_binary", [(1,1,1,0), (1,0,0)], N=2) 
+# Used for clutter plot.
+cm_clutter = LinearSegmentedColormap.from_list("cm_clutter", [(1,1,1,0), (1,0,0)], N=2) 
 
-cm_mask = LinearSegmentedColormap.from_list("cm_binary", [(1,1,1,0), (0,0,0,0.3)], N=2) 
-
-cm_latest = LinearSegmentedColormap.from_list("cm_dwdradar", ["white", "white","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue",
+# Used for latest radar composite plot.
+cm_latest = LinearSegmentedColormap.from_list("cm_latest", ["white", "white","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue","royalblue",
                                                           "cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue","cornflowerblue",                                                        
                                                           "skyblue","skyblue","skyblue","skyblue","skyblue","skyblue","skyblue","skyblue","skyblue","skyblue",
                                                           "paleturquoise","paleturquoise","paleturquoise","paleturquoise","paleturquoise","paleturquoise","paleturquoise","paleturquoise","paleturquoise","paleturquoise",

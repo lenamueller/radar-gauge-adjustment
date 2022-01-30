@@ -1,7 +1,7 @@
 import sys
 import wradlib as wrl
 
-from func import plot_polar, cm_binary
+from func import plot_polar, cm_clutter
 from func import clutter_gabella, attcorr, plot_attenuation_mean_bin, plot_attenuation_per_bin, rain_depths, plot_raindepths
 
 
@@ -17,7 +17,7 @@ plot_polar(data, filename, "Raw data", "raw")
 
 # Clutter correction
 clmap, data_no_clutter = clutter_gabella(data, filename)
-plot_polar(data=clmap, filename=filename, what="cluttermap", subtitle="Detected clutter", cm=cm_binary, plot_cbar=False)
+plot_polar(data=clmap, filename=filename, what="cluttermap", subtitle="Detected clutter", cm=cm_clutter, plot_cbar=False)
 plot_polar(data=data_no_clutter, filename=filename, what="noclutter", subtitle="After clutter correction")    
 
 # Attenuation correction

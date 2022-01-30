@@ -11,3 +11,4 @@ images/umd
 images/*diff*
 images/*ipol*
 images/latest/RAD_composite_*.png
+images/boundarymask60min.png
