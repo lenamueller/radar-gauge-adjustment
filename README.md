@@ -70,7 +70,7 @@ zope.interface     5.4.0
 
 ## Overview
 ### Plot latest radar image of Germany
-<img src="images/latest/RAD_composite_2022-01-27-1820.png" alt="RAD_composite_2022-01-27-1820" width="600"/>   
+<img src="images/latest/RAD_composite_2022-01-29-2055.png" alt="RAD_composite_2022-01-29-2055" width="600"/>   
 
 ### Workflow (example case 09.01.2019 12:00 UTC, Eastern Germany)
 #### 1. Read DX-data (Radar)
@@ -91,7 +91,7 @@ Averaged attenuation by distance (left) and individual attenuation for single az
 <img src="images/drs/radar_dx_drs_1901091200_attcorr_bin270.png" alt="radar_dx_drs_1901091200_attcorr_bin270" width="400"/>
 
 #### 4. Derive rain depths
-Apply Z-R-Relation with parametrization a=200 and b=1.6, suggested by J.S. Marshall and W. Palmer, 1948 and used by DWD for winter rain.
+Apply Z-R-Relation with parametrization a=200 and b=1.6, suggested by J.S. Marshall and W. Palmer, 1948.
 Integrate rain rates for 5 min (left) and 60 min (right).   
 <img src="images/drs/radar_dx_drs_1901091200_raindepths5min.png" alt="radar_dx_drs_1901091200_raindepths5min" width="400"/>
 <img src="images/drs/radar_dx_drs_1901091200_raindepths60min.png" alt="radar_dx_drs_1901091200_raindepths60min" width="400"/>
