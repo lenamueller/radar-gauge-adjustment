@@ -109,18 +109,19 @@ obs_coords = zip(gaugedata["easting"], gaugedata["northing"]) # 2D-array
 obs_coords = np.array([list(elem) for elem in obs_coords])
 
 # Apply adjustment methods.
-adjuster = wrl.adjust.AdjustAdd(obs_coords, radar_coords, 
-                                nnear_raws=1, stat="best", mingages=5, minval=0)
-adjusted_add = adjuster(obs_1d, radar_1d)
 if minutes == 60:
     minval = 0.1
 if minutes == 5:
     minval = 0.01
+
+adjuster = wrl.adjust.AdjustAdd(obs_coords, radar_coords, 
+                                nnear_raws=1, stat="best", mingages=5, minval=0)
+adjusted_add = adjuster(obs_1d, radar_1d)
 adjuster = wrl.adjust.AdjustMultiply(obs_coords, radar_coords, 
-                                     nnear_raws=1, stat="best", mingages=5, minval=minval)
+                                     nnear_raws=1, stat="best", mingages=5, minval=0.01)
 adjusted_mul = adjuster(obs_1d, radar_1d) 
 adjuster = wrl.adjust.AdjustMFB(obs_coords, radar_coords, 
-                                nnear_raws=1, stat="best", mingages=5)
+                                nnear_raws=1, stat="best", mingages=5, minval=0.01)
 adjusted_mulcon = adjuster(obs_1d, radar_1d)
 adjuster = wrl.adjust.AdjustMixed(obs_coords, radar_coords, 
                                   nnear_raws=1, stat="best", mingages=5)
@@ -223,8 +224,8 @@ plt.scatter(q_gau, q_mul, label="Mul. adjustment", s=7, marker='o', alpha=0.8)
 plt.scatter(q_gau, q_mulcon, label="MFB adjustment", s=7, marker='o', alpha=0.8)
 plt.scatter(q_gau, q_mix, label="Add.-Mul. adjustment", s=7, marker='o', alpha=0.8)
 if minutes == 5:
-    plt.xlim([0,0.4])
-    plt.ylim([0,0.4])
+    plt.xlim([0,0.2])
+    plt.ylim([0,0.2])
 if minutes == 60:    
     plt.xlim([0,1.5])
     plt.ylim([0,1.5])

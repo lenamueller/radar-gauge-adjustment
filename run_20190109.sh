@@ -20,7 +20,7 @@ export WRADLIB_DATA=/home/lena/Documents/projects/radar-gauge-adjustment/opendat
 # python code/PlotCorrection.py "raa00-dx_10356-1901091200-umd---bin" 60
 # python code/PlotCorrection.py "raa00-dx_10557-1901091200-neu---bin" 60
 # python code/PlotCorrection.py "raa00-dx_10780-1901091200-eis---bin" 60
-python code/PlotComposite.py 60
+python code/PlotComposite.py 5
 
 # Deactivate virtual env.
 deactivate
