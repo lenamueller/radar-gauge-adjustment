@@ -9,7 +9,7 @@ set -e
 source myenv/bin/activate
 
 # Download data from DWD`s open data server.
-wget -A "*latest*" -r -np --level=2 https://opendata.dwd.de/weather/radar/sites/dx/
+wget -q -A "*latest*" -r -np --level=2 https://opendata.dwd.de/weather/radar/sites/dx/
 
 # Set data path for wradlib.
 export WRADLIB_DATA=/home/lena/Documents/projects/radar-gauge-adjustment/opendata.dwd.de/
