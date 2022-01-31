@@ -146,8 +146,8 @@ def raw_in_cz(array_adjusted):
 
 # Plot adjusted radar data.
 plot_grid(raw_in_cz(adjusted_add_arr), gaugedata, xgrid, ygrid, "Additive adjustment\n(spatially variable)", f"adjustment/adjustment_add", minutes, plotgauges=True)
-plot_grid(raw_in_cz(adjusted_mul_arr), gaugedata, xgrid, ygrid,"Multiplicative adjustment\n(spatially variable)", f"adjustment/adjustment_mul", minutes, plotgauges=True)
-plot_grid(raw_in_cz(adjusted_mulcon_arr), gaugedata, xgrid, ygrid,"Multiplicative adjustment\n(spatially uniform)", f"adjustment/adjustment_mfb", minutes, plotgauges=True)
+plot_grid(adjusted_mul_arr, gaugedata, xgrid, ygrid,"Multiplicative adjustment\n(spatially variable)", f"adjustment/adjustment_mul", minutes, plotgauges=True)
+plot_grid(adjusted_mulcon_arr, gaugedata, xgrid, ygrid,"Multiplicative adjustment\n(spatially uniform)", f"adjustment/adjustment_mfb", minutes, plotgauges=True)
 plot_grid(raw_in_cz(adjusted_mix_arr), gaugedata, xgrid, ygrid,"Additive-multiplicative-mixed adjustment\n(spatially variable)", f"adjustment/adjustment_mixed", minutes, plotgauges=True)
 
 # Plot errors.    
