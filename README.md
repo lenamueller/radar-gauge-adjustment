@@ -108,15 +108,15 @@ Data source:
 
 #### 7. Apply adjustment methods
 ##### Additive adjustment with spatial differentiation
-<img src="images/adjustment_add5min.png" alt="adjustment_mul5min" width="400"/><img src="images/adjustment_add60min.png" alt="adjustment_add60min" width="400"/>   
+<img src="images/adjustment/adjustment_add5min.png" alt="adjustment_mul5min" width="400"/><img src="images/adjustment/adjustment_add60min.png" alt="adjustment_add60min" width="400"/>   
 ##### Multiplicative adjustment with spatial differentiation
-<img src="images/adjustment_mul5min.png" alt="adjustment_mul5min" width="400"/><img src="images/adjustment_mul60min.png" alt="adjustment_mul60min" width="400"/>   
+<img src="images/adjustment/adjustment_mul5min.png" alt="adjustment_mul5min" width="400"/><img src="images/adjustment/adjustment_mul60min.png" alt="adjustment_mul60min" width="400"/>   
 ##### Multiplicative adjustment with no spatial differentiation
-<img src="images/adjustment_mfb5min.png" alt="adjustment_mfb5min" width="400"/><img src="images/adjustment_mfb60min.png" alt="adjustment_mfb60min" width="400"/>   
+<img src="images/adjustment/adjustment_mfb5min.png" alt="adjustment_mfb5min" width="400"/><img src="images/adjustment/adjustment_mfb60min.png" alt="adjustment_mfb60min" width="400"/>   
 ##### Additive-multiplicative adjustment with spatial differentiation
-<img src="images/adjustment_mixed5min.png" alt="adjustment_mixed5min" width="400"/><img src="images/adjustment_mixed60min.png" alt="adjustment_mixed60min" width="400"/>   
+<img src="images/adjustment/adjustment_mixed5min.png" alt="adjustment_mixed5min" width="400"/><img src="images/adjustment/adjustment_mixed60min.png" alt="adjustment_mixed60min" width="400"/>   
 
 Notice: The gray dots in the maps represent gauge stations. Due to the lack of gauge station data outside of Germany the interpolation there produces artifacts and don't allow a proper interpretation of the rain field there is tricky.
 
 #### 8. Evaluate adjustment methods
-<img src="images/qq_5min.png" alt="qq_5min" width="400"/><img src="images/qq_60min.png" alt="qq_60min" width="400"/>
+<img src="images/eval/qq_5min.png" alt="qq_5min" width="400"/><img src="images/eval/qq_60min.png" alt="qq_60min" width="400"/>
