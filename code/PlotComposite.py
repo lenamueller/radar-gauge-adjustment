@@ -6,10 +6,9 @@ import matplotlib.pyplot as plt
 from pyproj import Proj
 import shapefile as shp
 
-from func import max_from_arrays, plot_grid, rmse, clutter_gabella, attcorr, rain_depths
+from func import max_from_arrays, plot_grid, clutter_gabella, attcorr, rain_depths, quantiles_100
 from colorbars import cm
 from ReadGaugeData import read_gauges_60min, read_gauges_1min, gaugearray
-from PlotAdjustment import plot_adjusted_data, plot_adjust_errors
 
 myProj = Proj("+proj=utm +zone=33 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 
@@ -110,13 +109,21 @@ obs_coords = zip(gaugedata["easting"], gaugedata["northing"]) # 2D-array
 obs_coords = np.array([list(elem) for elem in obs_coords])
 
 # Apply adjustment methods.
-adjuster = wrl.adjust.AdjustAdd(obs_coords, radar_coords, nnear_raws=9, minval=0)
+adjuster = wrl.adjust.AdjustAdd(obs_coords, radar_coords, 
+                                nnear_raws=1, stat="best", mingages=5, minval=0)
 adjusted_add = adjuster(obs_1d, radar_1d)
-adjuster = wrl.adjust.AdjustMultiply(obs_coords, radar_coords, nnear_raws=9, minval=0.01)
+if minutes == 60:
+    minval = 0.1
+if minutes == 5:
+    minval = 0.01
+adjuster = wrl.adjust.AdjustMultiply(obs_coords, radar_coords, 
+                                     nnear_raws=1, stat="best", mingages=5, minval=minval)
 adjusted_mul = adjuster(obs_1d, radar_1d) 
-adjuster = wrl.adjust.AdjustMFB(obs_coords, radar_coords)
+adjuster = wrl.adjust.AdjustMFB(obs_coords, radar_coords, 
+                                nnear_raws=1, stat="best", mingages=5)
 adjusted_mulcon = adjuster(obs_1d, radar_1d)
-adjuster = wrl.adjust.AdjustMixed(obs_coords, radar_coords, nnear_raws=9, minval=0)
+adjuster = wrl.adjust.AdjustMixed(obs_coords, radar_coords, 
+                                  nnear_raws=1, stat="best", mingages=5)
 adjusted_mix = adjuster(obs_1d, radar_1d)
 
 # Reproject 1D-array (490000 elements) to 2D-array (700,700).
@@ -146,8 +153,16 @@ mulcon_de = np.add(adjusted_mulcon_arr, boundary_mask).reshape([700*700])
 mix_de = np.add(adjusted_mix_arr, boundary_mask).reshape([700*700])
 
 # Plot adjusted radar data.
-plot_adjusted_data(xgrid, ygrid, gaugedata, adjusted_add_arr, adjusted_mul_arr, adjusted_mulcon_arr, adjusted_mix_arr, minutes)
-plot_adjust_errors(xgrid, ygrid, gaugedata, radar, adjusted_add_arr, adjusted_mul_arr, adjusted_mulcon_arr, adjusted_mix_arr, minutes)
+plot_grid(adjusted_add_arr, gaugedata, xgrid, ygrid, "Additive adjustment\n(spatially variable)", f"adjustment_add", minutes, plotgauges=True)
+plot_grid(adjusted_mul_arr, gaugedata, xgrid, ygrid,"Multiplicative adjustment\n(spatially variable)", f"adjustment_mul", minutes, plotgauges=True)
+plot_grid(adjusted_mulcon_arr, gaugedata, xgrid, ygrid,"Multiplicative adjustment\n(spatially uniform)", f"adjustment_mfb", minutes, plotgauges=True)
+plot_grid(adjusted_mix_arr, gaugedata, xgrid, ygrid,"Additive-multiplicative-mixed adjustment\n(spatially variable)", f"adjustment_mixed", minutes, plotgauges=True)
+
+# Plot errors.    
+plot_grid(adjusted_add_arr - radar, gaugedata, xgrid, ygrid,"Additive error\n(spatially variable)", "adjustment_add_diff", minutes, plotgauges=True)
+plot_grid(adjusted_mul_arr - radar, gaugedata, xgrid, ygrid,"Multiplicative error\n(spatially variable)", "adjustment_mul_diff", minutes, plotgauges=True)
+plot_grid(adjusted_mulcon_arr - radar, gaugedata, xgrid, ygrid,"Multiplicative error\n(spatially uniform)", "adjustment_mfb_diff", minutes, plotgauges=True)
+plot_grid(adjusted_mix_arr - radar, gaugedata, xgrid, ygrid,"Additive-multiplicative-mixed error\n(spatially variable)", "adjustment_mixed_diff", minutes, plotgauges=True)    
 
 # Plot CDF.
 fig = pl.figure(figsize=(10, 6))
@@ -159,43 +174,61 @@ plt.hist(mulcon_de, 100, density=True, histtype="step", cumulative=True, label="
 plt.hist(mix_de, 100, density=True, histtype="step", cumulative=True, label="Add.-Mul. (var)", linewidth=1.5)
 plt.legend(loc="lower right")
 plt.grid()
-plt.xlim([0, 4.25])
-plt.xlabel("60 min - precipitation [mm]", fontsize=12)
-# plt.xlabel("60 min - Niederschlagssumme [mm]", fontsize=12)
+if minutes == 5:
+    plt.xlim([0, 0.5])
+else:
+    plt.xlim([0, 4.25])
+plt.xlabel(f"{minutes} min - precipitation [mm]", fontsize=12)
 plt.ylabel("CDF", fontsize=12)
-# plt.ylabel("kumulierte, empirische Wahrscheinlichkeit", fontsize=12)
-plt.savefig("images/adjustment_eval", dpi=600)
+plt.savefig(f"images/adjustment_eval_{minutes}min", dpi=600)
 
-# Calculate RMSE and bias indices.
-
-def rmse(gauge_indices, predict_array, actual_array):
-    l = []
+# Calculate bias indices.
+def err_metrics(gauge_indices, predict_array, actual_array):
+    gauge_list, rad_list = [], []
     for i in range(len(gauge_indices)):
         x,y = gauge_indices[i]
-        rad_val = predict_array[y][x]
-        gau_val = actual_array[x][y]
-        if not np.isnan(rad_val): # ignore gauge stations outside of radar domain
-            l.append(np.square(np.subtract(rad_val, gau_val)))
-    return np.sqrt(np.mean(l))
+        rad_list.append(predict_array[y][x])
+        gauge_list.append(actual_array[x][y])
+    metrics = wrl.verify.ErrorMetrics(np.array(gauge_list), np.array(rad_list))
+    return metrics.pprint()
 
-def pbias(gauge_indices, predict_array, actual_array):
-    l = []
-    for i in range(len(gauge_indices)):
-        x,y = gauge_indices[i]
-        rad_val = predict_array[y][x]
-        gau_val = actual_array[x][y]
-        if not np.isnan(rad_val): # ignore gauge stations outside of radar domain
-            if gau_val != 0:
-                diff = np.subtract(rad_val, gau_val)
-                l.append(diff/gau_val)
-    return np.mean(l)
+print("metrics Add. adjustment", err_metrics(gauge_indices, adjusted_add_arr, gauge_array))
+print("metrics Mul. adjustment", err_metrics(gauge_indices, adjusted_mul_arr, gauge_array))
+print("metrics Mul. (spatially uniform) adjustment", err_metrics(gauge_indices, adjusted_mulcon_arr, gauge_array))
+print("metrics Mixed adjustment", err_metrics(gauge_indices, adjusted_mix_arr, gauge_array))
 
-print("RMSE Add. adjustment", rmse(gauge_indices, adjusted_add_arr, gauge_array))
-print("RMSE Mul. adjustment", rmse(gauge_indices, adjusted_mul_arr, gauge_array))
-print("RMSE Mul. (spatially uniform) adjustment", rmse(gauge_indices, adjusted_mulcon_arr, gauge_array))
-print("RMSE Mixed adjustment", rmse(gauge_indices, adjusted_mix_arr, gauge_array))
+# Access gauge data within Germany.
+rad = np.add(adjusted_add_arr,boundary_mask)
+gauge_list = []
+for i in range(len(gauge_indices)):
+    x,y = gauge_indices[i]
+    rad_val = rad[y][x]
+    if not np.isnan(rad_val):
+        gauge_list.append(gauge_array[x][y])
 
-print("pbias Add. adjustment", pbias(gauge_indices, adjusted_add_arr, gauge_array))
-print("pbias Mul. adjustment", pbias(gauge_indices, adjusted_mul_arr, gauge_array))
-print("pbias Mul. (spatially uniform) adjustment", pbias(gauge_indices, adjusted_mulcon_arr, gauge_array))
-print("pbias Mixed adjustment", pbias(gauge_indices, adjusted_mix_arr, gauge_array))
+# Calculate quaniltes.
+q_add = quantiles_100(add_de)
+q_mul = quantiles_100(mul_de)
+q_mulcon = quantiles_100(mulcon_de)
+q_mix = quantiles_100(mix_de)
+q_gau = quantiles_100(gauge_list)
+q_rad = quantiles_100(radar_de)
+
+# Plot QQ.
+fig, ax = plt.subplots()    
+plt.plot([0,1.5], [0,1.5], linewidth=0.5, color="grey", ls="-", alpha=0.8)
+plt.scatter(q_gau, q_rad, label="Radar (unadjusted)", s=7, marker='o', alpha=0.8)
+plt.scatter(q_gau, q_add, label="Add. adjustment", s=7, marker='o', alpha=0.8, color="k")
+plt.scatter(q_gau, q_mul, label="Mul. adjustment", s=7, marker='o', alpha=0.8)
+plt.scatter(q_gau, q_mulcon, label="MFB adjustment", s=7, marker='o', alpha=0.8)
+plt.scatter(q_gau, q_mix, label="Add.-Mul. adjustment", s=7, marker='o', alpha=0.8)
+if minutes == 5:
+    plt.xlim([0,0.4])
+    plt.ylim([0,0.4])
+if minutes == 60:    
+    plt.xlim([0,1.5])
+    plt.ylim([0,1.5])
+plt.xlabel("gauge quantiles")
+plt.ylabel("radar quantiles")
+plt.legend()
+plt.savefig(f"images/qq_{minutes}min", dpi=600, bbox_inches='tight')

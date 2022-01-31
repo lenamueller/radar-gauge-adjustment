@@ -3,6 +3,7 @@ import matplotlib.pylab as pl
 import wradlib as wrl
 import numpy as np
 import math
+from scipy import stats
 import shapefile as shp  # Requires the pyshp package
 import matplotlib.pyplot as plt
 from pyproj import Proj
@@ -140,7 +141,7 @@ def max_from_arrays(array1, array2):
 def plot_grid(data, gaugedict, xgrid, ygrid, plottitle, filename, minutes, cmap=cm, plotgauges=False):
     """ Plot gridded data."""
     # replace negative numbers with zero.
-    data[data<0] = 0
+    # data[data<0] = 0
     pl.figure(figsize=(10, 8))
     ax = pl.subplot(111, aspect="equal")
     # add radar data
@@ -184,6 +185,9 @@ def plot_grid(data, gaugedict, xgrid, ygrid, plottitle, filename, minutes, cmap=
     pl.title(plottitle, fontsize=14)
     pl.savefig(f"images/{filename}{minutes}min", dpi=600)
     
-def rmse(actual, pred):     
-    """Calculate root mean squared error from two lists."""
-    return np.sqrt(np.square(np.subtract(actual, pred)).mean())
+def quantiles_100(liste):
+    score_list = []
+    liste = [x for x in liste if not np.isnan(x) ==True] # remove NaN's
+    for x in np.arange(1,101,1):
+        score_list.append(stats.scoreatpercentile(liste, x))
+    return score_list
