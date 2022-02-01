@@ -145,16 +145,20 @@ def raw_in_cz(array_adjusted):
     return array_adjusted
 
 # Plot adjusted radar data.
-plot_grid(raw_in_cz(adjusted_add_arr), gaugedata, xgrid, ygrid, "Additive adjustment\n(spatially variable)", f"adjustment/adjustment_add", minutes, plotgauges=True)
-plot_grid(adjusted_mul_arr, gaugedata, xgrid, ygrid,"Multiplicative adjustment\n(spatially variable)", f"adjustment/adjustment_mul", minutes, plotgauges=True)
-plot_grid(adjusted_mulcon_arr, gaugedata, xgrid, ygrid,"Multiplicative adjustment\n(spatially uniform)", f"adjustment/adjustment_mfb", minutes, plotgauges=True)
-plot_grid(raw_in_cz(adjusted_mix_arr), gaugedata, xgrid, ygrid,"Additive-multiplicative-mixed adjustment\n(spatially variable)", f"adjustment/adjustment_mixed", minutes, plotgauges=True)
+plot_grid(raw_in_cz(adjusted_add_arr), gaugedata, xgrid, ygrid, "Additive Korrektur\n(räumlich variabel)", f"adjustment/adjustment_add", minutes, plotgauges=True)
+plot_grid(raw_in_cz(adjusted_mul_arr), gaugedata, xgrid, ygrid,"Multiplikative Korrektur\n(räumlich variabel)", f"adjustment/adjustment_mul", minutes, plotgauges=True)
+plot_grid(raw_in_cz(adjusted_mulcon_arr), gaugedata, xgrid, ygrid,"Multiplikative Korrektur\n(räumlich konstant)", f"adjustment/adjustment_mfb", minutes, plotgauges=True)
+plot_grid(raw_in_cz(adjusted_mix_arr), gaugedata, xgrid, ygrid,"Additiv-multiplikative Korrektur\n(räumlich variabel)", f"adjustment/adjustment_mixed", minutes, plotgauges=True)
+# plot_grid(raw_in_cz(adjusted_add_arr), gaugedata, xgrid, ygrid, "Additive adjustment\n(spatially variable)", f"adjustment/adjustment_add", minutes, plotgauges=True)
+# plot_grid(adjusted_mul_arr, gaugedata, xgrid, ygrid,"Multiplicative adjustment\n(spatially variable)", f"adjustment/adjustment_mul", minutes, plotgauges=True)
+# plot_grid(adjusted_mulcon_arr, gaugedata, xgrid, ygrid,"Multiplicative adjustment\n(spatially uniform)", f"adjustment/adjustment_mfb", minutes, plotgauges=True)
+# plot_grid(raw_in_cz(adjusted_mix_arr), gaugedata, xgrid, ygrid,"Additive-multiplicative-mixed adjustment\n(spatially variable)", f"adjustment/adjustment_mixed", minutes, plotgauges=True)
 
 # Plot errors.    
-plot_grid(adjusted_add_arr - radar, gaugedata, xgrid, ygrid,"Additive error\n(spatially variable)", "adjustment/adjustment_add_diff", minutes, plotgauges=True)
-plot_grid(adjusted_mul_arr - radar, gaugedata, xgrid, ygrid,"Multiplicative error\n(spatially variable)", "adjustment/adjustment_mul_diff", minutes, plotgauges=True)
-plot_grid(adjusted_mulcon_arr - radar, gaugedata, xgrid, ygrid,"Multiplicative error\n(spatially uniform)", "adjustment/adjustment_mfb_diff", minutes, plotgauges=True)
-plot_grid(adjusted_mix_arr - radar, gaugedata, xgrid, ygrid,"Additive-multiplicative-mixed error\n(spatially variable)", "adjustment/adjustment_mixed_diff", minutes, plotgauges=True)    
+plot_grid(adjusted_add_arr - radar, gaugedata, xgrid, ygrid,"Additiver Fehler\n(räumlich variabel)", "adjustment/adjustment_add_diff", minutes, plotgauges=True)
+plot_grid(adjusted_mul_arr - radar, gaugedata, xgrid, ygrid,"Multiplikativer Fehler\n(räumlich variabel)", "adjustment/adjustment_mul_diff", minutes, plotgauges=True)
+plot_grid(adjusted_mulcon_arr - radar, gaugedata, xgrid, ygrid,"Multiplikativer Fehler\n(räumlich konstant)", "adjustment/adjustment_mfb_diff", minutes, plotgauges=True)
+plot_grid(adjusted_mix_arr - radar, gaugedata, xgrid, ygrid,"Additiv-multiplikativer Fehler\n(räumlich variabel)", "adjustment/adjustment_mixed_diff", minutes, plotgauges=True)    
 
 # Calculate bias indices.
 def err_metrics(gauge_indices, predict_array, actual_array):
@@ -170,6 +174,7 @@ print("metrics Add. adjustment", err_metrics(gauge_indices, adjusted_add_arr, ga
 print("metrics Mul. adjustment", err_metrics(gauge_indices, adjusted_mul_arr, gauge_array))
 print("metrics Mul. (spatially uniform) adjustment", err_metrics(gauge_indices, adjusted_mulcon_arr, gauge_array))
 print("metrics Mixed adjustment", err_metrics(gauge_indices, adjusted_mix_arr, gauge_array))
+print("metrics without adjustment", err_metrics(gauge_indices, radar, gauge_array))
 
 # Remove CZ/PL data.
 radar_de = np.add(radar, boundary_mask).reshape([700*700])
@@ -196,19 +201,21 @@ q_gau = quantiles_100(gauge_list)
 q_rad = quantiles_100(radar_de)
 
 # Plot CDF.
-fig = pl.figure(figsize=(10, 6))
-plt.hist(np.array(gaugedata["prec_mm"]), 100, density=True, histtype="step", cumulative=True, label="Bodenstationen", linewidth=1.5)
-plt.hist(radar_de, 100, density=True, histtype="step", cumulative=True, label="Radar-Rohdaten", linewidth=1.5)
-plt.hist(add_de, 100, density=True, histtype="step", cumulative=True, label="Add. (var)", linewidth=1.5)
-plt.hist(mul_de, 100, density=True, histtype="step", cumulative=True, label="Mul. (var)", linewidth=1.5)
-plt.hist(mulcon_de, 100, density=True, histtype="step", cumulative=True, label="Mul. (konst)", linewidth=1.5)
-plt.hist(mix_de, 100, density=True, histtype="step", cumulative=True, label="Add.-Mul. (var)", linewidth=1.5)
+fig = pl.figure(figsize=(10, 10))
+plt.axis("equal")
+plt.hist(gaugedata["prec_mm"], 50, density=True, histtype="step", cumulative=False, label="Bodenstationen", linewidth=1.5)
+plt.hist(radar_de, 50, density=True, histtype="step", cumulative=False, label="Radar-Rohdaten", linewidth=1.5)
+plt.hist(add_de, 50, density=True, histtype="step", cumulative=False, label="Add. (var)", linewidth=1.5)
+plt.hist(mul_de, 50, density=True, histtype="step", cumulative=False, label="Mul. (var)", linewidth=1.5)
+plt.hist(mulcon_de, 50, density=True, histtype="step", cumulative=False, label="Mul. (konst)", linewidth=1.5)
+plt.hist(mix_de, 50, density=True, histtype="step", cumulative=False, label="Add.-Mul. (var)", linewidth=1.5)
 plt.legend(loc="lower right")
 plt.grid()
 if minutes == 5:
     plt.xlim([0, 0.5])
 else:
-    plt.xlim([0, 4.25])
+    plt.xlim([0, 10])
+    plt.ylim([0,10])
 plt.xlabel(f"{minutes} min - precipitation [mm]", fontsize=12)
 plt.ylabel("CDF", fontsize=12)
 plt.savefig(f"images/eval/adjustment_eval_{minutes}min", dpi=600)
@@ -222,12 +229,12 @@ plt.scatter(q_gau, q_mul, label="Mul. Aneichung", s=7, marker='o', alpha=0.8, c=
 plt.scatter(q_gau, q_mulcon, label="MFB Aneichung", s=7, marker='o', alpha=0.8, c="brown")
 plt.scatter(q_gau, q_mix, label="Add.-Mul. Aneichung", s=7, marker='o', alpha=0.8, c="orange")
 if minutes == 5:
-    plt.xlim([0,0.2])
-    plt.ylim([0,0.2])
+    plt.xlim([0,0.5])
+    plt.ylim([0,0.5])
 if minutes == 60:    
     plt.xlim([0,1.5])
-    plt.ylim([0,1.5])
-plt.xlabel("Ombrometer - Quantile")
-plt.ylabel("Radar - Quantile")
-plt.legend()
-plt.savefig(f"images/eval/qq_{minutes}min", dpi=600, bbox_inches='tight')
+    plt.ylim([0,2.5])
+plt.xlabel("Ombrometer-Quantile der Niederschlagshöhen [mm]")
+plt.ylabel("Radar-Quantile der Niederschlagshöhen [mm]")
+plt.legend(loc="upper left")
+plt.savefig(f"images/eval/qq_{minutes}min", dpi=600, bbox_inches='tight', transparent=False)

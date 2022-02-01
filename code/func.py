@@ -152,7 +152,8 @@ def plot_grid(data, gaugedict, xgrid, ygrid, plottitle, filename, minutes, cmap=
     cbar = pl.colorbar(pm)
     cm.set_bad(color='gray')
     cbar.ax.tick_params(labelsize=14) 
-    cbar.set_label(f"{minutes} min - rain depths (mm)", fontsize=14)
+    # cbar.set_label(f"{minutes} min - rain depths (mm)", fontsize=14)
+    cbar.set_label(f"{minutes} min - Niederschlagshöhen (mm)", fontsize=14)
     # add gauge stations
     if plotgauges == True:
         pl.scatter(gaugedict['easting'], gaugedict["northing"],  marker='+', s=3, c="k", alpha=0.5)
@@ -175,15 +176,15 @@ def plot_grid(data, gaugedict, xgrid, ygrid, plottitle, filename, minutes, cmap=
                 east.append(e)
                 north.append(n)
             plt.plot(east, north, lw=0.5, c="k")
-    pl.xlabel("Easting (m)", fontsize=14)
-    pl.ylabel("Northing (m)", fontsize=14)
+    pl.xlabel("Rechtswert (m)", fontsize=14)
+    pl.ylabel("Hochwert (m)", fontsize=14)
     ax.ticklabel_format(useOffset=False, style='plain')
     ax.tick_params(axis='both', which='major', labelsize=14)
     pl.xlim(50000, 600000)
     pl.ylim(min(ygrid), 6000000)
     pl.grid(lw=0.5, zorder=10)
     pl.title(plottitle, fontsize=14)
-    pl.savefig(f"images/{filename}{minutes}min", dpi=600)
+    pl.savefig(f"images/{filename}{minutes}min", dpi=600, transparent=False)
     
 def quantiles_100(liste):
     score_list = []
