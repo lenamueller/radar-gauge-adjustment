@@ -229,12 +229,12 @@ plt.scatter(q_gau, q_mul, label="Mul. Aneichung", s=7, marker='o', alpha=0.8, c=
 plt.scatter(q_gau, q_mulcon, label="MFB Aneichung", s=7, marker='o', alpha=0.8, c="brown")
 plt.scatter(q_gau, q_mix, label="Add.-Mul. Aneichung", s=7, marker='o', alpha=0.8, c="orange")
 if minutes == 5:
-    plt.xlim([0,0.5])
-    plt.ylim([0,0.5])
+    plt.xlim([0,0.3])
+    plt.ylim([0,0.3])
 if minutes == 60:    
     plt.xlim([0,1.5])
     plt.ylim([0,2.5])
 plt.xlabel("Ombrometer-Quantile der Niederschlagshöhen [mm]")
 plt.ylabel("Radar-Quantile der Niederschlagshöhen [mm]")
-plt.legend(loc="upper left")
+plt.legend(loc="upper right")
 plt.savefig(f"images/eval/qq_{minutes}min", dpi=600, bbox_inches='tight', transparent=False)
