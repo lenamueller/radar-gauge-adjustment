@@ -10,8 +10,7 @@ source myenv/bin/activate
 export WRADLIB_DATA=/home/lena/Documents/projects/radar-gauge-adjustment/opendata.dwd.de/
 
 # Download data from DWD`s open data server.
-# wget -q -r --level=1 https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/1_minute/precipitation/historical/2019/
-# wget -q -r --level=1 https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/hourly/precipitation/historical/
+wget -q -r --level=1 https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/1_minute/precipitation/historical/2019/
 
 #!/bin/sh
 # Run radar postprocessing and plotting. Arguments is time in minutes. Code works for 5 and 60 minutes.
