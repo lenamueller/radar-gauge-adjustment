@@ -6,8 +6,8 @@ import matplotlib.pylab as pl
 import matplotlib.pyplot as plt
 from pyproj import Proj
 
-from colorbars import cm_latest
-from func import max_from_arrays
+from Colorbars import cm_latest
+from HelperFunctions import max_from_arrays
 
 
 # Retrieve arguments.

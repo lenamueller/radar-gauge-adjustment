@@ -6,8 +6,7 @@ import matplotlib.pyplot as plt
 from pyproj import Proj
 import shapefile as shp
 
-from func import max_from_arrays, plot_grid, clutter_gabella, attcorr, rain_depths, quantiles_100
-from colorbars import cm
+from HelperFunctions import max_from_arrays, plot_grid, clutter_gabella, attcorr, rain_depths, quantiles_100
 from ReadGaugeData import read_gauges_60min, read_gauges_1min, gaugearray
 
 myProj = Proj("+proj=utm +zone=33 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
@@ -129,7 +128,7 @@ adjusted_mix_arr = adjusted_mix.reshape(gridshape)
 adjusted_mix_arr[413:457, 269:310] = np.nan_to_num(adjusted_mix_arr[413:457, 269:310])
 
 # Create mask for CZ/PL: Read shp boundary and replace 1 with NaN.
-boundary_mask = np. loadtxt("boundary.txt")
+boundary_mask = np. loadtxt("geodata/DEU_east_boundary.txt")
 for row in range(700):
     for col in range(700):
         if boundary_mask[row][col] == 1:
@@ -145,10 +144,6 @@ def raw_in_cz(array_adjusted):
     return array_adjusted
 
 # Plot adjusted radar data.
-# plot_grid(raw_in_cz(adjusted_add_arr), gaugedata, xgrid, ygrid, "Additive Korrektur\n(räumlich variabel)", f"adjustment/adjustment_add", minutes, plotgauges=True)
-# plot_grid(raw_in_cz(adjusted_mul_arr), gaugedata, xgrid, ygrid,"Multiplikative Korrektur\n(räumlich variabel)", f"adjustment/adjustment_mul", minutes, plotgauges=True)
-# plot_grid(raw_in_cz(adjusted_mulcon_arr), gaugedata, xgrid, ygrid,"Multiplikative Korrektur\n(räumlich konstant)", f"adjustment/adjustment_mfb", minutes, plotgauges=True)
-# plot_grid(raw_in_cz(adjusted_mix_arr), gaugedata, xgrid, ygrid,"Additiv-multiplikative Korrektur\n(räumlich variabel)", f"adjustment/adjustment_mixed", minutes, plotgauges=True)
 plot_grid(raw_in_cz(adjusted_add_arr), gaugedata, xgrid, ygrid, "Additive adjustment\n(spatially variable)", f"adjustment/adjustment_add", minutes, plotgauges=True)
 plot_grid(adjusted_mul_arr, gaugedata, xgrid, ygrid,"Multiplicative adjustment\n(spatially variable)", f"adjustment/adjustment_mul", minutes, plotgauges=True)
 plot_grid(adjusted_mulcon_arr, gaugedata, xgrid, ygrid,"Multiplicative adjustment\n(spatially uniform)", f"adjustment/adjustment_mfb", minutes, plotgauges=True)
@@ -168,7 +163,7 @@ def err_metrics(gauge_indices, predict_array, actual_array):
         rad_list.append(predict_array[y][x])
         gauge_list.append(actual_array[x][y])
     metrics = wrl.verify.ErrorMetrics(np.array(gauge_list), np.array(rad_list))
-    return metrics.pprint()
+    return metrics.all()
 
 print("metrics Add. adjustment", err_metrics(gauge_indices, adjusted_add_arr, gauge_array))
 print("metrics Mul. adjustment", err_metrics(gauge_indices, adjusted_mul_arr, gauge_array))

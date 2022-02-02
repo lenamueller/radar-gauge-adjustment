@@ -8,8 +8,5 @@ images/eis
 images/neu
 images/pro
 images/umd
-images/*ipol*.png
 images/latest/RAD_composite_*.png
-images/boundarymask60min.png
-images/adjustment_*diff*
-geodata/IDW*
+images/adjustment/*diff*

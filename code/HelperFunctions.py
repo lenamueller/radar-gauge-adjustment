@@ -8,7 +8,7 @@ import shapefile as shp  # Requires the pyshp package
 import matplotlib.pyplot as plt
 from pyproj import Proj
 
-from colorbars import cm
+from Colorbars import cm
 
 
 myProj = Proj("+proj=utm +zone=33 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs")

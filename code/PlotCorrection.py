@@ -1,8 +1,8 @@
 import sys
 import wradlib as wrl
 
-from func import plot_polar, cm_clutter
-from func import clutter_gabella, attcorr, plot_attenuation_mean_bin, plot_attenuation_per_bin, rain_depths, plot_raindepths
+from Colorbars import cm_clutter
+from HelperFunctions import clutter_gabella, attcorr, plot_attenuation_mean_bin, plot_attenuation_per_bin, plot_polar, rain_depths, plot_raindepths
 
 
 # Retrieve arguments from shell script.
