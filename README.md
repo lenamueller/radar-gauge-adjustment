@@ -119,4 +119,5 @@ Data source:
 Notice: The gray dots in the maps represent gauge stations. Due to the lack of gauge station data outside of Germany the interpolation there produces artifacts and don't allow a proper interpretation of the rain field there is tricky.
 
 #### 8. Evaluate adjustment methods
+5 min - QQ plot (left), 60 min - QQ plot (right)   
 <img src="images/eval/qq_5min.png" alt="qq_5min" width="400"/><img src="images/eval/qq_60min.png" alt="qq_60min" width="400"/>
