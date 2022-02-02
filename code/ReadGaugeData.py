@@ -10,7 +10,6 @@ myProj = Proj("+proj=utm +zone=33 +north +ellps=WGS84 +datum=WGS84 +units=m +no_
 
 def read_gauges_1min(gaugelist, xgrid, ygrid, path_to_data, minutes):
     gaugedata = {"id": [], "prec_mm": []}
-    
     # Unzip files of interest.
     files = [_ for _ in os.listdir(path_to_data) if _.endswith(r".zip")]
     for file in files:
@@ -20,7 +19,6 @@ def read_gauges_1min(gaugelist, xgrid, ygrid, path_to_data, minutes):
         if (date_start < date_of_interest < date_end) and (file[21:26] in gaugelist):
             with zipfile.ZipFile(path_to_data+file, 'r') as zip_ref:
                 zip_ref.extractall(path_to_data)
-
     # Go through extracted data files and fill gauge dict with id and precipitation.    
     files_extracted = [_ for _ in os.listdir(path_to_data) if _.endswith(r".txt")]
     for file in files_extracted:
@@ -37,7 +35,6 @@ def read_gauges_1min(gaugelist, xgrid, ygrid, path_to_data, minutes):
                         p_list.append(float(line_split[4]))
             gaugedata["id"].append(line_split[0].zfill(5))                        
             gaugedata["prec_mm"].append(np.round(sum(p_list),3))
-
     # Add easting, northing and elevation for given id's.
     num_gauges = len(gaugedata["id"])
     gaugedata["easting"] = [0 for _ in range(num_gauges)]
@@ -57,8 +54,7 @@ def read_gauges_1min(gaugelist, xgrid, ygrid, path_to_data, minutes):
                         east, north = myProj(line[5], line[4])                   
                         gaugedata["easting"][i] = min(xgrid, key=lambda x:abs(x-east)) # get closest pixel in xgrid
                         gaugedata["northing"][i] = min(ygrid, key=lambda x:abs(x-north)) # get closest pixel in ygrid
-                        gaugedata["elevation"][i] = line[3]
-                        
+                        gaugedata["elevation"][i] = line[3]     
     return gaugedata
 
 
@@ -103,7 +99,6 @@ def read_gauges_60min(gaugelist, xgrid, ygrid, path_to_data="opendata.dwd.de/exa
                         gaugedata["easting"][i] = min(xgrid, key=lambda x:abs(x-east)) # get closest pixel in xgrid
                         gaugedata["northing"][i] = min(ygrid, key=lambda x:abs(x-north)) # get closest pixel in ygrid
                         gaugedata["elevation"][i] = line[3]
-    
     return gaugedata
 
 
@@ -126,5 +121,4 @@ def gaugearray(gaugedict, xgrid, ygrid, method="cubic"):
     all_indices = ([[x, y] for x in range(700) for y in range(700)])
     gauge_array_ipol = sp.interpolate.griddata(points = gauge_indices, values = gaugedict["prec_mm"], xi = all_indices, method=method)
     gauge_array_ipol = gauge_array_ipol.reshape((700,700))
-    
     return gauge_array, gauge_indices, gauge_array_ipol, gauge_stations

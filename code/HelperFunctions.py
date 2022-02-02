@@ -141,7 +141,7 @@ def max_from_arrays(array1, array2):
 def plot_grid(data, gaugedict, xgrid, ygrid, plottitle, filename, minutes, cmap=cm, plotgauges=False):
     """ Plot gridded data."""
     # replace negative numbers with zero.
-    # data[data<0] = 0
+    data[data<0] = 0
     pl.figure(figsize=(10, 8))
     ax = pl.subplot(111, aspect="equal")
     # add radar data
@@ -153,7 +153,6 @@ def plot_grid(data, gaugedict, xgrid, ygrid, plottitle, filename, minutes, cmap=
     cm.set_bad(color='gray')
     cbar.ax.tick_params(labelsize=14) 
     cbar.set_label(f"{minutes} min - rain depths (mm)", fontsize=14)
-    # cbar.set_label(f"{minutes} min - Niederschlagshöhen (mm)", fontsize=14)
     # add gauge stations
     if plotgauges == True:
         pl.scatter(gaugedict['easting'], gaugedict["northing"],  marker='+', s=3, c="k", alpha=0.5)
@@ -176,8 +175,6 @@ def plot_grid(data, gaugedict, xgrid, ygrid, plottitle, filename, minutes, cmap=
                 east.append(e)
                 north.append(n)
             plt.plot(east, north, lw=0.5, c="k")
-    # pl.xlabel("Rechtswert (m)", fontsize=14)
-    # pl.ylabel("Hochwert (m)", fontsize=14)
     pl.xlabel("Easting (m)", fontsize=14)
     pl.ylabel("Northing (m)", fontsize=14)
     ax.ticklabel_format(useOffset=False, style='plain')
@@ -189,8 +186,9 @@ def plot_grid(data, gaugedict, xgrid, ygrid, plottitle, filename, minutes, cmap=
     pl.savefig(f"images/{filename}{minutes}min", dpi=600, transparent=False)
     
 def quantiles_100(liste):
+    """Calculate 100 quantiles of given list ignoring NaN's."""
     score_list = []
-    liste = [x for x in liste if not np.isnan(x) ==True] # remove NaN's
+    liste = [x for x in liste if not np.isnan(x) ==True]
     for x in np.arange(1,101,1):
         score_list.append(stats.scoreatpercentile(liste, x))
     return score_list
