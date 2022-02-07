@@ -1,4 +1,4 @@
-[![Repo status - Active](https://img.shields.io/badge/Repo_status-Active-00aa00)](https://)
+[![repo status - closed](https://img.shields.io/badge/repo_status-closed-ff0000)](https://)
 [![GitHub issues](https://img.shields.io/github/issues/lenamueller/radar-gauge-adjustment)](https://github.com/lenamueller/radar-gauge-adjustment/issues/)
 [![python - 3.10.1](https://img.shields.io/badge/python-3.10.1-ffe05c?logo=python&logoColor=4685b7)](https://)
 [![field of application - meteorology, hydrology](https://img.shields.io/badge/field_of_application-meteorology%2C_hydrology-00aaff)](https://)
